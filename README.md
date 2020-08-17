@@ -16,7 +16,7 @@ An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Pl
 - install Vulkan API libraries
 - Install 32-bit Game Support
 - install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc.
-- configur Esync for you
+- automatically configure esync support
 - optional install Steam and Lutris Gaming Plattform *[coming next..]*
 - install ProtonGE to fix issues in some Steam Games *[coming soon..]*
 - optional install MangoHUD, OBS and other nice to have software *[coming later..]*
