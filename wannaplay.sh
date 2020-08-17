@@ -148,7 +148,7 @@ gpu_confirm() {
  
     instwine() {
 
-        echo -e ${GREEN}"TASK: Install Vulkan API"${NC}
+        echo -e ${GREEN}"TASK: Install WineHQ-staging"${NC}
         wget -nc https://dl.winehq.org/wine-builds/winehq.key
         sudo apt-key add winehq.key
         sudo apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $UbCodename main" -y 
@@ -310,8 +310,8 @@ elif [ $vendor == "Nvidia" ]; then
 
     #uninstall standard open source nouveau driver 
     echo -e ${GREEN}"TASK: Remove Open Source Driver (nouveau) - this can take view seconds..."${NC}
-    sudo bash -c "echo blacklist nouveau > /etc/modprobe.d/blacklist-nvidia-nouveau.conf"
-    sudo bash -c "echo options nouveau modeset=0 >> /etc/modprobe.d/blacklist-nvidia-nouveau.conf"
+    sudo echo blacklist nouveau > /etc/modprobe.d/blacklist-nvidia-nouveau.conf
+    sudo echo options nouveau modeset=0 >> /etc/modprobe.d/blacklist-nvidia-nouveau.conf
     sudo update-initramfs -u
 
     #Install additional libraries for better compatibility with Origin, Battle.net, Uplay etc.
