@@ -153,6 +153,7 @@ gpu_confirm() {
         sudo apt-key add winehq.key
         sudo apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $UbCodename main" -y 
         sudo apt-get install --install-recommends winehq-staging -y
+        rm winehq.key
 
     }
 
@@ -218,7 +219,7 @@ elif [ $vendor == "1002" ]; then
 elif [ -z $vendor ]; then
 
     echo -e ${RED}"Error: Can't recognize your GPU"${NC}
-    echo -e "Choose the Graphic Card Vendor manually and install the Driver."
+    echo -e "Choose the Graphic Card Vendor manually and install the Driver. You can skip the Driver Installation and perform all other Tasks!"
     echo "Input the Number - then press Enter! - Otherwise press [Ctrl+C] to Abort"
     echo
 
@@ -307,8 +308,8 @@ elif [ $vendor == "Nvidia" ]; then
     #Install the driver
     sudo apt install nvidia-driver-$NdriverV libnvidia-gl-$NdriverV libnvidia-gl-$NdriverV:i386 -y
 
-    #uninstall standard open source nouveau driver (this can take view seconds...)
-    echo -e ${GREEN}"TASK: Remove Open Source Driver (nouveau)"${NC}
+    #uninstall standard open source nouveau driver 
+    echo -e ${GREEN}"TASK: Remove Open Source Driver (nouveau) - this can take view seconds..."${NC}
     sudo bash -c "echo blacklist nouveau > /etc/modprobe.d/blacklist-nvidia-nouveau.conf"
     sudo bash -c "echo options nouveau modeset=0 >> /etc/modprobe.d/blacklist-nvidia-nouveau.conf"
     sudo update-initramfs -u
