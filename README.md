@@ -10,7 +10,6 @@ An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Pl
 
 
 ### What it does:
-version 0.8.6 
 
 - automatically detect your Graphic Card and install the latest recommended Driver for Intel/AMD/Nvidia GPU's
 - install winehq-staging
