@@ -139,7 +139,7 @@ gpu_confirm() {
     additionallibs() {
 
         echo -e ${GREEN}"TASK: Install additional libraries for better compatibility with Origin, Battle.net, Uplay etc."${NC}
-        sudo apt-get install libgnutls30:i386 libldap-2.4-2:i386 libgpg-error0:i386 libxml2:i386 libasound2-plugins:i386 libsdl2-2.0-0:i386 libfreetype6:i386 libdbus-1-3:i386 libsqlite3-0:i386 -y
+        apt-get install libgnutls30:i386 libldap-2.4-2:i386 libgpg-error0:i386 libxml2:i386 libasound2-plugins:i386 libsdl2-2.0-0:i386 libfreetype6:i386 libdbus-1-3:i386 libsqlite3-0:i386 -y
 
     }
 
@@ -150,9 +150,9 @@ gpu_confirm() {
 
         echo -e ${GREEN}"TASK: Install WineHQ-staging"${NC}
         wget -nc https://dl.winehq.org/wine-builds/winehq.key #also you can just pipe the key into apt-key without having to save it first
-        sudo apt-key add winehq.key
-        sudo apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $UbCodename main" -y 
-        sudo apt-get install --install-recommends winehq-staging -y
+        apt-key add winehq.key
+        apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $UbCodename main" -y 
+        apt-get install --install-recommends winehq-staging -y
         rm winehq.key
 
     }
@@ -162,8 +162,8 @@ gpu_confirm() {
     32bitgames() {
 
         echo -e ${GREEN}"TASK: Install 32-bit Game support"${NC}
-        sudo dpkg --add-architecture i386
-        sudo apt update -y
+        dpkg --add-architecture i386
+        apt update -y
 
     }
 
@@ -253,8 +253,8 @@ fi
 echo 
 echo -e ${GREEN}"TASK: Upgrading your System..."${NC}
 sleep 3
-sudo rm /var/lib/dpkg/lock & sudo rm /var/lib/apt/lists/lock #avoid an error i had while testing.. not 100% sure this is safe
-sudo apt update -y && sudo apt upgrade -y
+rm /var/lib/dpkg/lock & sudo rm /var/lib/apt/lists/lock #avoid an error i had while testing.. not 100% sure this is safe
+apt update -y && sudo apt upgrade -y
 
 ##################################################
 #AMDGPU - Kisak PPA incl. LLVM for Ubuntu 19.10+ #
@@ -270,12 +270,12 @@ if [ $vendor == "Intel-AMD" ]; then
 
     #Install Vulkan
     echo -e ${GREEN}"TASK: Install Vulkan API"${NC}
-    sudo apt install mesa-vulkan-drivers mesa-vulkan-drivers:i386 -y
+    apt install mesa-vulkan-drivers mesa-vulkan-drivers:i386 -y
 
     #Add Driver PPA & Install
     echo -e ${GREEN}"TASK: Adding display driver PPA & Install display driver package"${NC}
-    sudo add-apt-repository ppa:kisak/kisak-mesa -y
-    sudo apt update -y && sudo apt upgrade -y
+    add-apt-repository ppa:kisak/kisak-mesa -y
+    apt update -y && sudo apt upgrade -y
 
     #Install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc.
         additionallibs
@@ -293,26 +293,26 @@ elif [ $vendor == "Nvidia" ]; then
 
     #Install Vulkan
     echo -e ${GREEN}"TASK: Install Vulkan API"${NC}
-    sudo apt install libvulkan1 libvulkan1:i386 -y
+    apt install libvulkan1 libvulkan1:i386 -y
 
     #Add Driver PPA & Install
     #ToDo: autocheck GPU if the latest driver compatible - else give option to install legacy driver?
     echo -e ${GREEN}"TASK: Adding display driver PPA & Install latest display driver package"${NC}
-    sudo add-apt-repository ppa:graphics-drivers/ppa -y
-    sudo apt update -y
+    add-apt-repository ppa:graphics-drivers/ppa -y
+    apt update -y
 
     #get latest nvidia driver version
     Ndriver=$(apt-cache search nvidia-driver* | grep "nvidia-driver"  | cut -c -17 | tail -1) 
     NdriverV=${Ndriver:14}
 
     #Install the driver
-    sudo apt install nvidia-driver-$NdriverV libnvidia-gl-$NdriverV libnvidia-gl-$NdriverV:i386 -y
+    apt install nvidia-driver-$NdriverV libnvidia-gl-$NdriverV libnvidia-gl-$NdriverV:i386 -y
 
     #uninstall standard open source nouveau driver 
     echo -e ${GREEN}"TASK: Remove Open Source Driver (nouveau) - this can take view seconds..."${NC}
-    sudo echo "blacklist nouveau" > /etc/modprobe.d/blacklist-nvidia-nouveau.conf
-    sudo echo "options nouveau modeset=0" >> /etc/modprobe.d/blacklist-nvidia-nouveau.conf
-    sudo update-initramfs -u
+    echo "blacklist nouveau" > /etc/modprobe.d/blacklist-nvidia-nouveau.conf
+    echo "options nouveau modeset=0" >> /etc/modprobe.d/blacklist-nvidia-nouveau.conf
+    update-initramfs -u
 
     #Install additional libraries for better compatibility with Origin, Battle.net, Uplay etc.
         additionallibs
@@ -329,7 +329,7 @@ else
 
     #Install Vulkan
     echo -e ${GREEN}"TASK: Install Vulkan API"${NC}
-    sudo apt install libvulkan1 libvulkan1:i386 -y
+    apt install libvulkan1 libvulkan1:i386 -y
 
     #Install additional libraries for better compatibility with Origin, Battle.net, Uplay etc.
         additionallibs
@@ -354,12 +354,12 @@ limitconf=$(cat /etc/security/limits.conf | grep "^[^#;]" | grep "$real_user har
 
         if [ -z "$limitconf" ]; then
 
-            sudo echo "$real_user hard nofile 1048576" >> /etc/security/limits.conf
+            echo "$real_user hard nofile 1048576" >> /etc/security/limits.conf
             echo "No systemd version detected! Using initd configuration instead and write DefaultLimitNOFILE in /etc/security/limits.conf ...Done"
 
         else
             
-            sudo sed "s/$real_user hard nofile .*/$real_user hard nofile 1048576/g" -i /etc/security/limits.conf
+            sed "s/$real_user hard nofile .*/$real_user hard nofile 1048576/g" -i /etc/security/limits.conf
             echo "No systemd version detected! Using initd configuration instead and overwrite existing '$real_user hard nofile' entry in /etc/security/limits.conf ...Done"
         
         fi
@@ -368,23 +368,23 @@ limitconf=$(cat /etc/security/limits.conf | grep "^[^#;]" | grep "$real_user har
 
         if [ -z "$systemconf" ]; then
 
-                sudo echo "DefaultLimitNOFILE=1048576" >> /etc/systemd/system.conf
+                echo "DefaultLimitNOFILE=1048576" >> /etc/systemd/system.conf
                 echo "Write DefaultLimitNOFILE in /etc/systemd/system.conf ...Done"
 
             else
 
-                sudo sed "s/DefaultLimitNOFILE=.*/DefaultLimitNOFILE=1048576/g" -i /etc/systemd/system.conf
+                sed "s/DefaultLimitNOFILE=.*/DefaultLimitNOFILE=1048576/g" -i /etc/systemd/system.conf
                 echo "Overwrite DefaultLimitNOFILE entry in /etc/systemd/system.conf ...Done"
         fi  
             
             if [ -z "$userconf" ]; then
 
-                sudo echo "DefaultLimitNOFILE=1048576" >> /etc/systemd/user.conf
+                echo "DefaultLimitNOFILE=1048576" >> /etc/systemd/user.conf
                 echo "Write DefaultLimitNOFILE in /etc/systemd/user.conf ...Done"
 
             else
 
-                sudo sed "s/DefaultLimitNOFILE=.*/DefaultLimitNOFILE=1048576/g" -i /etc/systemd/user.conf
+                sed "s/DefaultLimitNOFILE=.*/DefaultLimitNOFILE=1048576/g" -i /etc/systemd/user.conf
                 echo "Overwrite existing DefaultLimitNOFILE in /etc/systemd/user.conf ...Done"
 
             fi
@@ -422,7 +422,7 @@ echo -e ${RED}"2"${NC}
 sleep 1
 echo -e ${RED}"1"${NC}
 sleep 1
-sudo reboot now
+reboot now
 break
 ;;
     [nN][oO]|[nN])
