@@ -7,7 +7,7 @@
 | | | (____ |  _ \|  _ \(____ |  |  _ \| |(____ | | | |  (____ |   / _  (____ |    \| ___ | (_/ 
 | | | / ___ | | | | | | / ___ |  | |_| | |/ ___ | |_| |  / ___ |  ( (_| / ___ | | | | ____| _   
  \___/\_____|_| |_|_| |_\_____|  |  __/ \_)_____|\__  |  \_____|   \___ \_____|_|_|_|_____)(_)  
-  version 0.8                    |_|            (____/            (_____|       "by Deliri"                
+  version 0.8.5                  |_|            (____/            (_____|       "by Delikt"                
 EOF
 
 # ${COLOR} colorize text ${NC}
@@ -149,11 +149,11 @@ gpu_confirm() {
     instwine() {
 
         echo -e ${GREEN}"TASK: Install WineHQ-staging"${NC}
-        wget -nc https://dl.winehq.org/wine-builds/winehq.key #also you can just pipe the key into apt-key without having to save it first
+        wget -qO - https://dl.winehq.org/wine-builds/winehq.key | apt-key add -
         apt-key add winehq.key
         apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $UbCodename main" -y 
         apt-get install --install-recommends winehq-staging -y
-        rm winehq.key
+        
 
     }
 
@@ -391,6 +391,13 @@ limitconf=$(cat /etc/security/limits.conf | grep "^[^#;]" | grep "$real_user har
     fi
 
 echo -e "${YELLOW}______________________________________________________________________________________________${NC}"
+
+
+ #Cleanup apt
+
+    apt autoremove
+    apt clean
+
 echo
 echo "please Reboot your System to take effect of the Changes! - Reboot now? [Y/n]"
 
