@@ -176,20 +176,20 @@ UbCodename=$(cat /etc/os-release | grep  "UBUNTU_CODENAME" | cut -b17-)
 
 
 #get Systemdversion
-systemdversion=$(sudo /bin/systemd --version | grep "systemd" | cut -b9-11)
+systemdversion=$(/bin/systemd --version | grep "systemd" | cut -b9-11)
 
 #identify GPU vendor by vendor ID
 #ToDo: Change code to recognize two and more GPU's (e.g. integrated GPU is active but not in use) and let select the main GPU as option
-vendor=$(sudo lshw -numeric -C display -quiet  | grep -ow "10DE" | tail -n +2) #Nvidia = 10DE
+vendor=$(lshw -numeric -C display -quiet  | grep -ow "10DE" | tail -n +2) #Nvidia = 10DE
 
 if [ -z "$vendor" ]; then
     
-    vendor=$(sudo lshw -numeric -C display -quiet  | grep -ow "1002" | tail -n +2) #AMD = 1002 
+    vendor=$(lshw -numeric -C display -quiet  | grep -ow "1002" | tail -n +2) #AMD = 1002 
 fi
 
 if [ -z "$vendor" ]; then
 
-    vendor=$(sudo lshw -numeric -C display -quiet  | grep -ow "8086" | tail -n +2) #Intel = 8086
+    vendor=$(lshw -numeric -C display -quiet  | grep -ow "8086" | tail -n +2) #Intel = 8086
 fi
 
 if [ $vendor == "8086" ]; then
@@ -253,8 +253,8 @@ fi
 echo 
 echo -e ${GREEN}"TASK: Upgrading your System..."${NC}
 sleep 3
-rm /var/lib/dpkg/lock & sudo rm /var/lib/apt/lists/lock #avoid an error i had while testing.. not 100% sure this is safe
-apt update -y && sudo apt upgrade -y
+rm /var/lib/dpkg/lock & rm /var/lib/apt/lists/lock #avoid an error i had while testing.. not 100% sure this is safe
+apt update -y && apt upgrade -y
 
 ##################################################
 #AMDGPU - Kisak PPA incl. LLVM for Ubuntu 19.10+ #
@@ -275,7 +275,7 @@ if [ $vendor == "Intel-AMD" ]; then
     #Add Driver PPA & Install
     echo -e ${GREEN}"TASK: Adding display driver PPA & Install display driver package"${NC}
     add-apt-repository ppa:kisak/kisak-mesa -y
-    apt update -y && sudo apt upgrade -y
+    apt update -y && apt upgrade -y
 
     #Install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc.
         additionallibs
@@ -391,6 +391,47 @@ limitconf=$(cat /etc/security/limits.conf | grep "^[^#;]" | grep "$real_user har
     fi
 
 echo -e "${YELLOW}______________________________________________________________________________________________${NC}"
+
+
+#Multichoice other Software Packages
+
+    cmd=(dialog --separate-output --checklist "Install Packages by using SPACE for selection then ENTER:" 22 76 16)
+    options=(1 "Install Steam Gaming Plattform ( and latest Proton-GE Build )" off    # any option can be set to default to "on"
+            2 "Install Lutris Open Gaming Plattform" off
+            3 "Install MangoHUD - FPS Overlay" off
+            4 "Install OBS - Open Broadcast Studio" off)
+    choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
+    clear
+    for choice in $choices
+    do
+        case $choice in
+            1)
+                steam=true
+                ;;
+            2)
+                lutris=true
+                ;;
+            3)
+                mangohud=true
+                ;;
+            4)
+                obs=true
+                ;;
+        esac
+    done
+
+echo $steam
+echo $lutris
+echo $mangohud
+echo $obs
+
+
+
+
+
+
+
+
 
 
  #Cleanup apt
