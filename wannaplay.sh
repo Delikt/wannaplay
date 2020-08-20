@@ -7,7 +7,7 @@
 | | | (____ |  _ \|  _ \(____ |  |  _ \| |(____ | | | |  (____ |   / _  (____ |    \| ___ | (_/ 
 | | | / ___ | | | | | | / ___ |  | |_| | |/ ___ | |_| |  / ___ |  ( (_| / ___ | | | | ____| _   
  \___/\_____|_| |_|_| |_\_____|  |  __/ \_)_____|\__  |  \_____|   \___ \_____|_|_|_|_____)(_)  
-  version 0.8.5                  |_|            (____/            (_____|       "by Delikt"                
+  version 0.9                    |_|            (____/            (_____|       "by Delikt"                
 EOF
 
 # ${COLOR} colorize text ${NC}
@@ -31,7 +31,7 @@ echo "o) Install 32-bit Game Support"
 echo "o) install additional libraries for better compatibility with Origin, Battle.net, Uplay etc."
 echo "o) automatically configure esync support"
 echo "o) optional install and configure Steam and Lutris"
-echo "o) install ProtonGE to fix issues in some Steam Games"
+echo "o) install ProtonGE to fix issues in some Steam Games [coming soon...]"
 echo "o) optional install MangoHUD, OBS"
 echo
 echo -e ${ORANGE}"ATTENTION:${NC} If you use an older ${GREEN}NVIDIA${NC} GPU please ensure the latest (long-life) Nvidia Driver is supported by your Card here:"
@@ -184,7 +184,7 @@ fi
 
 }
 
-#Install ProtonGE Custom Build
+#Install ProtonGE Custom Build - atm not in use
 
 instprotonGE() {
 
@@ -194,7 +194,7 @@ instprotonGE() {
     mkdir /home/$real_user/.steam/root/compatibilitytools.d -p 
     wget $protonGElink -P /tmp/
     tar xf /tmp/Proton*.tar.gz -C /home/$real_user/.steam/root/compatibilitytools.d
-    chown -R $real_user:$real_user /home/$real_user/.steam/root/compatibilitytools.d
+    chown -R $real_user:$real_user /home/$real_user/.steam
     rm /tmp/Proton*
 
 }
@@ -317,7 +317,7 @@ echo
 echo -e ${GREEN}"TASK: Upgrading your System..."${NC}
 sleep 3
 rm /var/lib/dpkg/lock & rm /var/lib/apt/lists/lock #avoid an error i had while testing.. not 100% sure this is safe
-apt update -y && apt upgrade -y
+apt update -y #&& apt upgrade -y
 
 #check if dialog package is installed otherwise install it 
 
@@ -468,8 +468,8 @@ limitconf=$(cat /etc/security/limits.conf | grep "^[^#;]" | grep "$real_user har
 
 sleep 1
 
-    cmd=(dialog --cancel-label "Skip" --separate-output --checklist "Install Packages by using SPACE for selection then ENTER:" 22 76 16)
-    options=(1 "Install Steam Gaming Plattform ( and latest Proton-GE Build )" off    # any option can be set to default to "on"
+    cmd=(dialog --cancel-label "Skip" --separate-output --checklist "Install Packages by using SPACE for selection then ENTER to comfirm:" 22 76 16)
+    options=(1 "Install Steam Gaming Plattform" off    # any option can be set to default to "on"
             2 "Install Lutris Open Gaming Plattform" off
             3 "Install MangoHUD - FPS Overlay" off
             4 "Install OBS - Open Broadcast Software" off)
@@ -493,7 +493,7 @@ sleep 1
         esac
     done
 
-if [ -n $steam ]; then
+if [ $steam == "true" ]; then
 
     echo -e ${GREEN}"TASK: Installing native version of Steam Gaming Plattform"${NC}
     apt install steam -y
@@ -501,7 +501,7 @@ if [ -n $steam ]; then
        
 fi
 
-if [ -n $lutris ]; then
+if [ $lutris == "true" ]; then
 
     #Install Lutris dependencies
 
@@ -518,7 +518,7 @@ if [ -n $lutris ]; then
 
 fi
 
-if [ -n $mangohud ]; then
+if [ $mangohud == "true" ]; then
 
     #Install MangoHud
 
@@ -526,9 +526,9 @@ if [ -n $mangohud ]; then
     buildessentialcheck
     gitcheck
     mkdir /home/$real_user/.mangohud
-    chown -R $real_user:$real_user /home/$real_user/.mangohud
     cd /home/$real_user/.mangohud
     git clone --recurse-submodules https://github.com/flightlessmango/MangoHud.git
+    chown -R $real_user:$real_user /home/$real_user/.mangohud
     cd MangoHud
     ./build.sh build
     ./build.sh package
@@ -536,8 +536,9 @@ if [ -n $mangohud ]; then
 
 fi
 
+    #Install OBS
 
-if [ -n $obs ]; then
+if [ $obs == "true" ]; then
 
     echo -e ${GREEN}"TASK: Installing OBS Studio"${NC}
     apt install ffmpeg -y
@@ -557,22 +558,23 @@ fi
 
     echo
     echo -e ${YELLOW}"______________________________________________________________________________________________${NC}"
+    echo
 
-if [ -n $mangohud ]; then
+if [ $mangohud == "true" ]; then
 
     echo -e ${GREEN}"To enable MangoHUD Overlay ingame, please visit ${NC}https://github.com/flightlessmango/MangoHud#normal-usage${GREEN} Website for instructions!"${NC}
 
 fi
     
-if [ -n $lutris ]; then
+if [ $lutris == "true" ]; then
 
     echo -e ${GREEN}"To get information how Lutris work, visit ${NC}https://github.com/lutris/lutris${GREEN} and ${NC}https://github.com/lutris/lutris/wiki${GREEN} Website for instructions!"${NC}
 
 fi
 
-if [ -n $mangohud ]; then
+if [ $steam == "true" ]; then
 
-echo -e ${GREEN}"If you dont know how to enable the Custom Proton Build in Steam visit${NC}${GREEN} https://github.com/GloriousEggroll/proton-ge-custom#enabling"${NC}
+echo -e ${GREEN}"If you dont know how to enable the Custom Proton Build in Steam visit${NC} https://github.com/GloriousEggroll/proton-ge-custom#enabling"
 
 fi
 

@@ -18,7 +18,7 @@ An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Pl
 - install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc.
 - automatically configure esync support
 - optional install Steam and Lutris Gaming Plattform 
-- install ProtonGE to fix issues in some Steam Games 
+- install ProtonGE to fix issues in some Steam Games *[coming soon...]*
 - optional install MangoHUD, OBS Studio
 
 
