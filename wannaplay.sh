@@ -83,14 +83,10 @@ echo
 
 dialog=$(apt list dialog --installed 2>/dev/null | grep -ow "dialog")
 
-if [ -n "$dialog" ] then
+if [ -z "$dialog" ]; then
 
-    break
-
-else
-
-    echo -e ${GREEN}"TASK: dialog package is not installed - install it for you"${NC}
-    apt install dialog -y
+        echo -e ${GREEN}"TASK: dialog package is not installed - install it for you"${NC}
+        apt install dialog -y
 
 fi
 
@@ -189,7 +185,7 @@ jqcheck() {
 
 jq=$(apt list jq --installed 2>/dev/null | grep -ow "jq")
 
-if [ -n "$jq" ] then
+if [ -n "$jq" ]; then
 
     break
 
@@ -209,7 +205,7 @@ instprotonGE() {
     echo -e ${GREEN}"TASK: Installing Proton-GE Custom Build for native Steam"${NC}
     jqcheck
     protonGElink=$(wget -q -nv -O- https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest 2>/dev/null |  jq -r '.assets[] | select(.browser_download_url | contains("Proton")) | .browser_download_url')
-    mkdir ~/.steam/root/compatibilitytools.d
+    mkdir /home/$real_user/.steam/root/compatibilitytools.d
     wget $protonGElink -P /tmp/
     tar xf /tmp/Proton*.tar.gz -C ~/.steam/root/compatibilitytools.d
     rm /tmp/Proton*
@@ -222,11 +218,7 @@ buildessentialcheck() {
 
 buildess=$(apt list build-essential --installed 2>/dev/null | grep -ow "build-essential")
 
-if [ -n "$buildess" ] then
-
-    break
-
-else
+if [ -z "$buildess" ]; then
 
     echo -e ${GREEN}"TASK: build-essential package is not installed but needed - Install it for you"${NC}
     apt install build-essential -y 
@@ -241,11 +233,7 @@ gitcheck() {
 
 git=$(apt list git --installed 2>/dev/null | grep -ow "git")
 
-if [ -n "$git" ] then
-
-    break
-
-else
+if [ -z "$git" ]; then
 
     echo -e ${GREEN}"TASK: git package is not installed but needed - Install it for you"${NC}
     apt install git -y 
@@ -478,9 +466,9 @@ limitconf=$(cat /etc/security/limits.conf | grep "^[^#;]" | grep "$real_user har
             fi
     fi
 
-echo -e "${YELLOW}______________________________________________________________________________________________${NC}"
-
 #Multichoice other Software Packages
+
+sleep 1
 
     cmd=(dialog --cancel-label "Skip" --separate-output --checklist "Install Packages by using SPACE for selection then ENTER:" 22 76 16)
     options=(1 "Install Steam Gaming Plattform ( and latest Proton-GE Build )" off    # any option can be set to default to "on"
@@ -507,19 +495,15 @@ echo -e "${YELLOW}______________________________________________________________
         esac
     done
 
-if [ $steam -eq "true" ]; then
+if [ $steam == "true" ]; then
 
     echo -e ${GREEN}"TASK: Installing native version of Steam Gaming Plattform"${NC}
     apt install steam -y
     instprotonGE
        
-else
-
-    break
-
 fi
 
-if [ $lutris -eq "true" ]; then
+if [ $lutris == "true" ]; then
 
     #Install Lutris dependencies
 
@@ -534,13 +518,9 @@ if [ $lutris -eq "true" ]; then
     apt update
     apt install lutris -y
 
-else
-
-    break
-
 fi
 
-if [ $mangohud -eq "true" ]; then
+if [ $mangohud == "true" ]; then
 
     #Install MangoHud
 
@@ -555,50 +535,34 @@ if [ $mangohud -eq "true" ]; then
     ./build.sh package
     ./build.sh install
 
-else
-
-    break
-
 fi
 
 
-if [ $obs -eq "true" ]; then
+if [ $obs == "true" ]; then
 
     apt install ffmpeg -y
     sudo add-repository ppa:obsproject/obs-studio -y
     sudo apt update
     sudo apt install obs-studio -y
 
-else
-
-    break
-
 fi
 
  #Cleanup apt
 
-    apt autoremove
+    apt autoremove -y
     apt clean
 
 #Information
 
-if [ $mangohud -eq "true" ]; then
+if [ $mangohud == "true" ]; then
 
     echo -e ${GREEN}"To enable MangoHUD Overlay ingame, please visit ${NC}https://github.com/flightlessmango/MangoHud#normal-usage${GREEN} Website for instructions!"${NC}
 
-else
-
-    break
-
 fi
     
-if [ $lutris -eq "true" ]; then
+if [ $lutris == "true" ]; then
 
     echo -e ${GREEN}"To get information how Lutris work, visit ${NC}https://github.com/lutris/lutris${GREEN} and ${NC}https://github.com/lutris/lutris/wiki${GREEN} Website for instructions!"${NC}
-
-else
-
-    break
 
 fi
 
