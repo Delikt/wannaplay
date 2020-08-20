@@ -7,7 +7,7 @@
 | | | (____ |  _ \|  _ \(____ |  |  _ \| |(____ | | | |  (____ |   / _  (____ |    \| ___ | (_/ 
 | | | / ___ | | | | | | / ___ |  | |_| | |/ ___ | |_| |  / ___ |  ( (_| / ___ | | | | ____| _   
  \___/\_____|_| |_|_| |_\_____|  |  __/ \_)_____|\__  |  \_____|   \___ \_____|_|_|_|_____)(_)  
-  version 0.8                    |_|            (____/            (_____|       "by Deliri"                
+  version 0.9                    |_|            (____/            (_____|       "by Delikt"                
 EOF
 
 # ${COLOR} colorize text ${NC}
@@ -30,9 +30,9 @@ echo "o) install Vulkan API libraries"
 echo "o) Install 32-bit Game Support"
 echo "o) install additional libraries for better compatibility with Origin, Battle.net, Uplay etc."
 echo "o) automatically configure esync support"
-echo "o) optional install and configure Steam and Lutris [coming soon..]"
-echo "o) install ProtonGE to fix issues in some Steam Games [coming soon..]"
-echo "o) optional install MangoHUD, OBS [coming later..]"
+echo "o) optional install and configure Steam and Lutris"
+echo "o) install ProtonGE to fix issues in some Steam Games [coming soon...]"
+echo "o) optional install MangoHUD, OBS"
 echo
 echo -e ${ORANGE}"ATTENTION:${NC} If you use an older ${GREEN}NVIDIA${NC} GPU please ensure the latest (long-life) Nvidia Driver is supported by your Card here:"
 echo
@@ -78,6 +78,7 @@ else
 fi
 
 echo 
+
 
 ###########
 #functions#
@@ -139,21 +140,20 @@ gpu_confirm() {
     additionallibs() {
 
         echo -e ${GREEN}"TASK: Install additional libraries for better compatibility with Origin, Battle.net, Uplay etc."${NC}
-        sudo apt-get install libgnutls30:i386 libldap-2.4-2:i386 libgpg-error0:i386 libxml2:i386 libasound2-plugins:i386 libsdl2-2.0-0:i386 libfreetype6:i386 libdbus-1-3:i386 libsqlite3-0:i386 -y
+        apt-get install libgnutls30:i386 libldap-2.4-2:i386 libgpg-error0:i386 libxml2:i386 libasound2-plugins:i386 libsdl2-2.0-0:i386 libfreetype6:i386 libdbus-1-3:i386 libsqlite3-0:i386 -y
 
     }
 
 
 #Install Winehq-staging
- 
-    instwine() {
 
-        echo -e ${GREEN}"TASK: Install WineHQ-staging"${NC}
-        wget -nc https://dl.winehq.org/wine-builds/winehq.key #also you can just pipe the key into apt-key without having to save it first
-        sudo apt-key add winehq.key
-        sudo apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $UbCodename main" -y 
-        sudo apt-get install --install-recommends winehq-staging -y
-        rm winehq.key
+instwine() {
+
+    echo -e ${GREEN}"TASK: Install WineHQ-staging"${NC}
+    wget -qO - https://dl.winehq.org/wine-builds/winehq.key | apt-key add -
+    add-apt-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $UbCodename main" -y 
+    apt update -y
+    apt install winehq-staging winetricks -y
 
     }
 
@@ -162,10 +162,73 @@ gpu_confirm() {
     32bitgames() {
 
         echo -e ${GREEN}"TASK: Install 32-bit Game support"${NC}
-        sudo dpkg --add-architecture i386
-        sudo apt update -y
+        dpkg --add-architecture i386
+        apt update -y
 
     }
+
+
+jqcheck() {
+
+#check if jq package is installed otherwise install it 
+
+jq=$(apt list jq --installed 2>/dev/null | grep -ow "jq")
+
+if [ -z "$jq" ]; then
+
+    echo -e ${GREEN}"TASK: jq package is not installed but needed to install ProtonGE - install it for you"${NC}
+    apt install jq -y #jq is needed for installing ProtonGE ( Command-line JSON processor )
+
+fi
+
+}
+
+#Install ProtonGE Custom Build - atm not in use
+
+instprotonGE() {
+    #FIXME: protonGE get not listet in steam [Game Breaker]
+    echo -e ${GREEN}"TASK: Installing Proton-GE Custom Build for native Steam"${NC}
+    jqcheck
+    rm /tmp/Proton*
+    protonGElink=$(wget -q -nv -O- https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest 2>/dev/null |  jq -r '.assets[] | select(.browser_download_url | contains("Proton")) | .browser_download_url')
+    mkdir -p /home/$real_user/.steam/root/compatibilitytools.d
+    wget $protonGElink -P /tmp/
+    tar xf /tmp/Proton*.tar.gz -C /home/$real_user/.steam/root/compatibilitytools.d
+    chown -R $real_user:$real_user /home/$real_user/.steam
+    rm /tmp/Proton*
+
+}
+
+#Check if build-essential is installed otherwise install it
+
+buildessentialcheck() {
+
+buildess=$(apt list build-essential --installed 2>/dev/null | grep -ow "build-essential")
+
+if [ -z "$buildess" ]; then
+
+    echo -e ${GREEN}"TASK: build-essential package is not installed but needed - Install it for you"${NC}
+    apt install build-essential -y 
+
+fi
+
+}
+
+#Check if git is installed otherwise install it
+
+gitcheck() {
+
+git=$(apt list git --installed 2>/dev/null | grep -ow "git")
+
+if [ -z "$git" ]; then
+
+    echo -e ${GREEN}"TASK: git package is not installed but needed - Install it for you"${NC}
+    apt install git -y 
+
+fi
+
+}
+
 
 ############################
 #gather system information #
@@ -176,20 +239,20 @@ UbCodename=$(cat /etc/os-release | grep  "UBUNTU_CODENAME" | cut -b17-)
 
 
 #get Systemdversion
-systemdversion=$(sudo /bin/systemd --version | grep "systemd" | cut -b9-11)
+systemdversion=$(/bin/systemd --version | grep "systemd" | cut -b9-11)
 
 #identify GPU vendor by vendor ID
 #ToDo: Change code to recognize two and more GPU's (e.g. integrated GPU is active but not in use) and let select the main GPU as option
-vendor=$(sudo lshw -numeric -C display -quiet  | grep -ow "10DE" | tail -n +2) #Nvidia = 10DE
+vendor=$(lshw -numeric -C display -quiet  | grep -ow "10DE" | tail -n +2) #Nvidia = 10DE
 
 if [ -z "$vendor" ]; then
     
-    vendor=$(sudo lshw -numeric -C display -quiet  | grep -ow "1002" | tail -n +2) #AMD = 1002 
+    vendor=$(lshw -numeric -C display -quiet  | grep -ow "1002" | tail -n +2) #AMD = 1002 
 fi
 
 if [ -z "$vendor" ]; then
 
-    vendor=$(sudo lshw -numeric -C display -quiet  | grep -ow "8086" | tail -n +2) #Intel = 8086
+    vendor=$(lshw -numeric -C display -quiet  | grep -ow "8086" | tail -n +2) #Intel = 8086
 fi
 
 if [ $vendor == "8086" ]; then
@@ -253,8 +316,19 @@ fi
 echo 
 echo -e ${GREEN}"TASK: Upgrading your System..."${NC}
 sleep 3
-sudo rm /var/lib/dpkg/lock & sudo rm /var/lib/apt/lists/lock #avoid an error i had while testing.. not 100% sure this is safe
-sudo apt update -y && sudo apt upgrade -y
+rm /var/lib/dpkg/lock & rm /var/lib/apt/lists/lock #avoid an error i had while testing.. not 100% sure this is safe
+apt update -y #&& apt upgrade -y
+
+#check if dialog package is installed otherwise install it 
+
+dialog=$(apt list dialog --installed 2>/dev/null | grep -ow "dialog")
+
+if [ -z "$dialog" ]; then
+
+        echo -e ${GREEN}"TASK: dialog package is not installed - install it for you"${NC}
+        apt install dialog -y
+
+fi
 
 ##################################################
 #AMDGPU - Kisak PPA incl. LLVM for Ubuntu 19.10+ #
@@ -270,12 +344,12 @@ if [ $vendor == "Intel-AMD" ]; then
 
     #Install Vulkan
     echo -e ${GREEN}"TASK: Install Vulkan API"${NC}
-    sudo apt install mesa-vulkan-drivers mesa-vulkan-drivers:i386 -y
+    apt install mesa-vulkan-drivers mesa-vulkan-drivers:i386 -y
 
     #Add Driver PPA & Install
     echo -e ${GREEN}"TASK: Adding display driver PPA & Install display driver package"${NC}
-    sudo add-apt-repository ppa:kisak/kisak-mesa -y
-    sudo apt update -y && sudo apt upgrade -y
+    add-apt-repository ppa:kisak/kisak-mesa -y
+    apt update -y && apt upgrade -y
 
     #Install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc.
         additionallibs
@@ -293,26 +367,26 @@ elif [ $vendor == "Nvidia" ]; then
 
     #Install Vulkan
     echo -e ${GREEN}"TASK: Install Vulkan API"${NC}
-    sudo apt install libvulkan1 libvulkan1:i386 -y
+    apt install libvulkan1 libvulkan1:i386 -y
 
     #Add Driver PPA & Install
     #ToDo: autocheck GPU if the latest driver compatible - else give option to install legacy driver?
     echo -e ${GREEN}"TASK: Adding display driver PPA & Install latest display driver package"${NC}
-    sudo add-apt-repository ppa:graphics-drivers/ppa -y
-    sudo apt update -y
+    add-apt-repository ppa:graphics-drivers/ppa -y
+    apt update -y
 
     #get latest nvidia driver version
     Ndriver=$(apt-cache search nvidia-driver* | grep "nvidia-driver"  | cut -c -17 | tail -1) 
     NdriverV=${Ndriver:14}
 
     #Install the driver
-    sudo apt install nvidia-driver-$NdriverV libnvidia-gl-$NdriverV libnvidia-gl-$NdriverV:i386 -y
+    apt install nvidia-driver-$NdriverV libnvidia-gl-$NdriverV libnvidia-gl-$NdriverV:i386 -y
 
     #uninstall standard open source nouveau driver 
     echo -e ${GREEN}"TASK: Remove Open Source Driver (nouveau) - this can take view seconds..."${NC}
-    sudo echo "blacklist nouveau" > /etc/modprobe.d/blacklist-nvidia-nouveau.conf
-    sudo echo "options nouveau modeset=0" >> /etc/modprobe.d/blacklist-nvidia-nouveau.conf
-    sudo update-initramfs -u
+    echo "blacklist nouveau" > /etc/modprobe.d/blacklist-nvidia-nouveau.conf
+    echo "options nouveau modeset=0" >> /etc/modprobe.d/blacklist-nvidia-nouveau.conf
+    update-initramfs -u
 
     #Install additional libraries for better compatibility with Origin, Battle.net, Uplay etc.
         additionallibs
@@ -329,7 +403,7 @@ else
 
     #Install Vulkan
     echo -e ${GREEN}"TASK: Install Vulkan API"${NC}
-    sudo apt install libvulkan1 libvulkan1:i386 -y
+    apt install libvulkan1 libvulkan1:i386 -y
 
     #Install additional libraries for better compatibility with Origin, Battle.net, Uplay etc.
         additionallibs
@@ -354,12 +428,12 @@ limitconf=$(cat /etc/security/limits.conf | grep "^[^#;]" | grep "$real_user har
 
         if [ -z "$limitconf" ]; then
 
-            sudo echo "$real_user hard nofile 1048576" >> /etc/security/limits.conf
+            echo "$real_user hard nofile 1048576" >> /etc/security/limits.conf
             echo "No systemd version detected! Using initd configuration instead and write DefaultLimitNOFILE in /etc/security/limits.conf ...Done"
 
         else
             
-            sudo sed "s/$real_user hard nofile .*/$real_user hard nofile 1048576/g" -i /etc/security/limits.conf
+            sed "s/$real_user hard nofile .*/$real_user hard nofile 1048576/g" -i /etc/security/limits.conf
             echo "No systemd version detected! Using initd configuration instead and overwrite existing '$real_user hard nofile' entry in /etc/security/limits.conf ...Done"
         
         fi
@@ -368,29 +442,140 @@ limitconf=$(cat /etc/security/limits.conf | grep "^[^#;]" | grep "$real_user har
 
         if [ -z "$systemconf" ]; then
 
-                sudo echo "DefaultLimitNOFILE=1048576" >> /etc/systemd/system.conf
+                echo "DefaultLimitNOFILE=1048576" >> /etc/systemd/system.conf
                 echo "Write DefaultLimitNOFILE in /etc/systemd/system.conf ...Done"
 
             else
 
-                sudo sed "s/DefaultLimitNOFILE=.*/DefaultLimitNOFILE=1048576/g" -i /etc/systemd/system.conf
+                sed "s/DefaultLimitNOFILE=.*/DefaultLimitNOFILE=1048576/g" -i /etc/systemd/system.conf
                 echo "Overwrite DefaultLimitNOFILE entry in /etc/systemd/system.conf ...Done"
         fi  
             
             if [ -z "$userconf" ]; then
 
-                sudo echo "DefaultLimitNOFILE=1048576" >> /etc/systemd/user.conf
+                echo "DefaultLimitNOFILE=1048576" >> /etc/systemd/user.conf
                 echo "Write DefaultLimitNOFILE in /etc/systemd/user.conf ...Done"
 
             else
 
-                sudo sed "s/DefaultLimitNOFILE=.*/DefaultLimitNOFILE=1048576/g" -i /etc/systemd/user.conf
+                sed "s/DefaultLimitNOFILE=.*/DefaultLimitNOFILE=1048576/g" -i /etc/systemd/user.conf
                 echo "Overwrite existing DefaultLimitNOFILE in /etc/systemd/user.conf ...Done"
 
             fi
     fi
 
-echo -e "${YELLOW}______________________________________________________________________________________________${NC}"
+#Multichoice other Software Packages
+
+sleep 1
+
+    cmd=(dialog --cancel-label "Skip" --separate-output --checklist "Install Packages by using SPACE for selection then ENTER to comfirm" 22 76 16)
+    options=(1 "Install Steam Gaming Plattform" off    # any option can be set to default to "on"
+            2 "Install Lutris Open Gaming Plattform" off
+            3 "Install MangoHUD - FPS Overlay" off
+            4 "Install OBS - Open Broadcast Software" off)
+    choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
+    clear
+    for choice in $choices
+    do
+        case $choice in
+            1)
+                steam=true
+                ;;
+            2)
+                lutris=true
+                ;;
+            3)
+                mangohud=true
+                ;;
+            4)
+                obs=true
+                ;;
+        esac
+    done
+
+if [ $steam == "true" ]; then
+
+    echo -e ${GREEN}"TASK: Installing native version of Steam Gaming Plattform"${NC}
+    apt install steam -y
+    instprotonGE
+       
+fi
+
+if [ $lutris == "true" ]; then
+
+    #Install Lutris dependencies
+    
+    echo -e ${GREEN}"TASK: Installing Lutris Open Gaming Plattform and Dependencies"${NC}
+    apt install python3-yaml python3-requests python3-pil python3-gi \
+    gir1.2-gtk-3.0 gir1.2-gnomedesktop-3.0 gir1.2-webkit2-4.0 \
+    gir1.2-notify-0.7 psmisc cabextract unzip p7zip curl fluid-soundfont-gs \
+    x11-xserver-utils python3-evdev libc6-i386 lib32gcc1 libgirepository1.0-dev \
+    python3-setproctitle python3-distro -y
+
+    add-apt-repository ppa:lutris-team/lutris -y
+    apt update -y
+    apt install lutris -y
+
+
+if [ $mangohud == "true" ]; then
+
+    #Install MangoHud
+
+    echo -e ${GREEN}"TASK: Installing MangoHUD - FPS Overlay"${NC}
+    buildessentialcheck
+    gitcheck
+    mkdir /home/$real_user/.mangohud
+    cd /home/$real_user/.mangohud
+    git clone --recurse-submodules https://github.com/flightlessmango/MangoHud.git
+    chown -R $real_user:$real_user /home/$real_user/.mangohud
+    cd MangoHud
+    ./build.sh build
+    ./build.sh package
+    ./build.sh install
+
+fi
+
+    #Install OBS
+
+if [ $obs == "true" ]; then
+
+    echo -e ${GREEN}"TASK: Installing OBS Studio"${NC}
+    apt install ffmpeg -y
+    add-apt-repository ppa:obsproject/obs-studio -y
+    apt update -y
+    apt install obs-studio -y
+
+fi
+
+    #Cleanup apt
+
+    apt autoremove -y
+    apt clean
+
+    #Information
+
+    echo
+    echo -e ${YELLOW}"______________________________________________________________________________________________${NC}"
+    echo
+
+if [ $mangohud == "true" ]; then
+
+    echo -e ${GREEN}"To enable MangoHUD Overlay ingame, please visit ${NC}https://github.com/flightlessmango/MangoHud#normal-usage${GREEN} Website for instructions!"${NC}
+
+fi
+    
+if [ $lutris == "true" ]; then
+
+    echo -e ${GREEN}"To get information how Lutris work, visit ${NC}https://github.com/lutris/lutris${GREEN} and ${NC}https://github.com/lutris/lutris/wiki${GREEN} Website for instructions!"${NC}
+
+fi
+
+if [ $steam == "true" ]; then
+
+echo -e ${GREEN}"If you dont know how to enable the Custom Proton Build in Steam visit${NC} https://github.com/GloriousEggroll/proton-ge-custom#enabling"
+
+fi
+
 echo
 echo "please Reboot your System to take effect of the Changes! - Reboot now? [Y/n]"
 
@@ -422,7 +607,7 @@ echo -e ${RED}"2"${NC}
 sleep 1
 echo -e ${RED}"1"${NC}
 sleep 1
-sudo reboot now
+reboot now
 break
 ;;
     [nN][oO]|[nN])
