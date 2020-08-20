@@ -146,15 +146,30 @@ gpu_confirm() {
 
 
 #Install Winehq-staging
- 
-    instwine() {
 
-        echo -e ${GREEN}"TASK: Install WineHQ-staging"${NC}
-        wget -qO - https://dl.winehq.org/wine-builds/winehq.key | apt-key add -
-        apt-key add winehq.key
-        apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $UbCodename main" -y 
-        apt-get install --install-recommends winehq-staging winetricks -y
-        
+   distro=$(cat /etc/os-release | grep "NAME" | head -n1 | cut -b7)
+
+    
+
+instwine() {
+
+    echo -e ${GREEN}"TASK: Install WineHQ-staging"${NC}
+    wget -qO - https://dl.winehq.org/wine-builds/winehq.key | apt-key add -
+
+if [ $distro != "U" ]; then #FIXME: Quick and Dirty
+
+    apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $UbCodename main" -y 
+
+else 
+
+    apt-add-apt-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $UbCodename main" -y 
+
+fi
+
+    apt update
+    apt install lutris -y
+
+fi
 
     }
 
@@ -512,8 +527,6 @@ if [ $lutris == "true" ]; then
     x11-xserver-utils python3-evdev libc6-i386 lib32gcc1 libgirepository1.0-dev \
     python3-setproctitle python3-distro -y
 
-    distro=$(cat /etc/os-release | grep "NAME" | head -n1 | cut -b7)
-
 if [ $distro != "U" ]; then #FIXME: Quick and Dirty
 
     apt add-repository ppa:lutris-team/lutris -y
@@ -528,8 +541,6 @@ fi
     apt install lutris -y
 
 fi
-
-
 
 if [ $mangohud == "true" ]; then
 
@@ -561,12 +572,12 @@ if [ $obs == "true" ]; then
 
 fi
 
- #Cleanup apt
+    #Cleanup apt
 
     apt autoremove -y
     apt clean
 
-#Information
+    #Information
 
 
     echo
