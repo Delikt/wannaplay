@@ -79,6 +79,21 @@ fi
 
 echo 
 
+#check if dialog package is installed otherwise install it 
+
+dialog=$(apt list dialog --installed 2>/dev/null | grep -ow "dialog")
+
+if [ -n "$dialog" ] then
+
+    break
+
+else
+
+    echo -e ${GREEN}"TASK: dialog package is not installed - install it for you"${NC}
+    apt install dialog -y
+
+fi
+
 ###########
 #functions#
 ###########
@@ -166,6 +181,79 @@ gpu_confirm() {
         apt update -y
 
     }
+
+
+jqcheck() {
+
+#check if jq package is installed otherwise install it 
+
+jq=$(apt list jq --installed 2>/dev/null | grep -ow "jq")
+
+if [ -n "$jq" ] then
+
+    break
+
+else
+
+    echo -e ${GREEN}"TASK: jq package is not installed but needed to install ProtonGE - install it for you"${NC}
+    apt install jq -y #jq is needed for installing ProtonGE ( Command-line JSON processor )
+
+fi
+
+}
+
+#Install ProtonGE Custom Build
+
+instprotonGE() {
+
+    echo -e ${GREEN}"TASK: Installing Proton-GE Custom Build for native Steam"${NC}
+    jqcheck
+    protonGElink=$(wget -q -nv -O- https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest 2>/dev/null |  jq -r '.assets[] | select(.browser_download_url | contains("Proton")) | .browser_download_url')
+    mkdir ~/.steam/root/compatibilitytools.d
+    wget $protonGElink -P /tmp/
+    tar xf /tmp/Proton*.tar.gz -C ~/.steam/root/compatibilitytools.d
+    rm /tmp/Proton*
+
+}
+
+#Check if build-essential is installed otherwise install it
+
+buildessentialcheck() {
+
+buildess=$(apt list build-essential --installed 2>/dev/null | grep -ow "build-essential")
+
+if [ -n "$buildess" ] then
+
+    break
+
+else
+
+    echo -e ${GREEN}"TASK: build-essential package is not installed but needed - Install it for you"${NC}
+    apt install build-essential -y 
+
+fi
+
+}
+
+#Check if git is installed otherwise install it
+
+gitcheck() {
+
+git=$(apt list git --installed 2>/dev/null | grep -ow "git")
+
+if [ -n "$git" ] then
+
+    break
+
+else
+
+    echo -e ${GREEN}"TASK: git package is not installed but needed - Install it for you"${NC}
+    apt install git -y 
+
+fi
+
+}
+
 
 ############################
 #gather system information #
@@ -392,14 +480,13 @@ limitconf=$(cat /etc/security/limits.conf | grep "^[^#;]" | grep "$real_user har
 
 echo -e "${YELLOW}______________________________________________________________________________________________${NC}"
 
-
 #Multichoice other Software Packages
 
-    cmd=(dialog --separate-output --checklist "Install Packages by using SPACE for selection then ENTER:" 22 76 16)
+    cmd=(dialog --cancel-label "Skip" --separate-output --checklist "Install Packages by using SPACE for selection then ENTER:" 22 76 16)
     options=(1 "Install Steam Gaming Plattform ( and latest Proton-GE Build )" off    # any option can be set to default to "on"
             2 "Install Lutris Open Gaming Plattform" off
             3 "Install MangoHUD - FPS Overlay" off
-            4 "Install OBS - Open Broadcast Studio" off)
+            4 "Install OBS - Open Broadcast Software" off)
     choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
     clear
     for choice in $choices
@@ -420,24 +507,100 @@ echo -e "${YELLOW}______________________________________________________________
         esac
     done
 
-echo $steam
-echo $lutris
-echo $mangohud
-echo $obs
+if [ $steam -eq "true" ]; then
+
+    echo -e ${GREEN}"TASK: Installing native version of Steam Gaming Plattform"${NC}
+    apt install steam -y
+    instprotonGE
+       
+else
+
+    break
+
+fi
+
+if [ $lutris -eq "true" ]; then
+
+    #Install Lutris dependencies
+
+    echo -e ${GREEN}"TASK: Installing Lutris Open Gaming Plattform and Dependencies"${NC}
+    apt install python3-yaml python3-requests python3-pil python3-gi \
+    gir1.2-gtk-3.0 gir1.2-gnomedesktop-3.0 gir1.2-webkit2-4.0 \
+    gir1.2-notify-0.7 psmisc cabextract unzip p7zip curl fluid-soundfont-gs \
+    x11-xserver-utils python3-evdev libc6-i386 lib32gcc1 libgirepository1.0-dev \
+    python3-setproctitle python3-distro -y
+
+    apt add-repository ppa:lutris-team/lutris -y
+    apt update
+    apt install lutris -y
+
+else
+
+    break
+
+fi
+
+if [ $mangohud -eq "true" ]; then
+
+    #Install MangoHud
+
+    echo -e ${GREEN}"TASK: Installing MangoHUD - FPS Overlay"${NC}
+    buildessentialcheck
+    gitcheck
+    mkdir ~/.mangohud
+    cd ~/.mangohud
+    git clone --recurse-submodules https://github.com/flightlessmango/MangoHud.git
+    cd MangoHud
+    ./build.sh build
+    ./build.sh package
+    ./build.sh install
+
+else
+
+    break
+
+fi
 
 
+if [ $obs -eq "true" ]; then
 
+    apt install ffmpeg -y
+    sudo add-repository ppa:obsproject/obs-studio -y
+    sudo apt update
+    sudo apt install obs-studio -y
 
+else
 
+    break
 
-
-
-
+fi
 
  #Cleanup apt
 
     apt autoremove
     apt clean
+
+#Information
+
+if [ $mangohud -eq "true" ]; then
+
+    echo -e ${GREEN}"To enable MangoHUD Overlay ingame, please visit ${NC}https://github.com/flightlessmango/MangoHud#normal-usage${GREEN} Website for instructions!"${NC}
+
+else
+
+    break
+
+fi
+    
+if [ $lutris -eq "true" ]; then
+
+    echo -e ${GREEN}"To get information how Lutris work, visit ${NC}https://github.com/lutris/lutris${GREEN} and ${NC}https://github.com/lutris/lutris/wiki${GREEN} Website for instructions!"${NC}
+
+else
+
+    break
+
+fi
 
 echo
 echo "please Reboot your System to take effect of the Changes! - Reboot now? [Y/n]"
