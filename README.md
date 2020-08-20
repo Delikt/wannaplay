@@ -6,7 +6,7 @@ The Goal is to provide a automated Script that have the capability to play most 
 
 For a large List of working Steam Games visit [protondb](https://www.protondb.com/).
 
-An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Plattform - visit [Lutris Homepage](https://lutris.net/).
+An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Plattform - visit [Lutris Homepage](https://lutris.net/). 
 
 
 ### What it does:
