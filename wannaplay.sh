@@ -147,16 +147,13 @@ gpu_confirm() {
 
 #Install Winehq-staging
 
-   distro=$(cat /etc/os-release | grep "NAME" | head -n1 | cut -b7)
-
 instwine() {
 
     echo -e ${GREEN}"TASK: Install WineHQ-staging"${NC}
     wget -qO - https://dl.winehq.org/wine-builds/winehq.key | apt-key add -
     add-apt-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $UbCodename main" -y 
     apt update -y
-    apt install lutris -y
-
+    apt install winehq-staging winetricks -y
 
     }
 
@@ -192,6 +189,7 @@ instprotonGE() {
     #FIXME: protonGE get not listet in steam [Game Breaker]
     echo -e ${GREEN}"TASK: Installing Proton-GE Custom Build for native Steam"${NC}
     jqcheck
+    rm /tmp/Proton*
     protonGElink=$(wget -q -nv -O- https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest 2>/dev/null |  jq -r '.assets[] | select(.browser_download_url | contains("Proton")) | .browser_download_url')
     mkdir -p /home/$real_user/.steam/root/compatibilitytools.d
     wget $protonGElink -P /tmp/
@@ -470,7 +468,7 @@ limitconf=$(cat /etc/security/limits.conf | grep "^[^#;]" | grep "$real_user har
 
 sleep 1
 
-    cmd=(dialog --cancel-label "Skip" --separate-output --checklist "Install Packages by using SPACE for selection then ENTER to comfirm:" 22 76 16)
+    cmd=(dialog --cancel-label "Skip" --separate-output --checklist "Install Packages by using SPACE for selection then ENTER to comfirm" 22 76 16)
     options=(1 "Install Steam Gaming Plattform" off    # any option can be set to default to "on"
             2 "Install Lutris Open Gaming Plattform" off
             3 "Install MangoHUD - FPS Overlay" off
@@ -543,7 +541,7 @@ if [ $obs == "true" ]; then
 
     echo -e ${GREEN}"TASK: Installing OBS Studio"${NC}
     apt install ffmpeg -y
-    add-repository ppa:obsproject/obs-studio -y
+    add-apt-repository ppa:obsproject/obs-studio -y
     apt update -y
     apt install obs-studio -y
 
@@ -555,7 +553,6 @@ fi
     apt clean
 
     #Information
-
 
     echo
     echo -e ${YELLOW}"______________________________________________________________________________________________${NC}"
