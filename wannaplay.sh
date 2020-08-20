@@ -30,9 +30,9 @@ echo "o) install Vulkan API libraries"
 echo "o) Install 32-bit Game Support"
 echo "o) install additional libraries for better compatibility with Origin, Battle.net, Uplay etc."
 echo "o) automatically configure esync support"
-echo "o) optional install and configure Steam and Lutris [coming soon..]"
-echo "o) install ProtonGE to fix issues in some Steam Games [coming soon..]"
-echo "o) optional install MangoHUD, OBS [coming later..]"
+echo "o) optional install and configure Steam and Lutris"
+echo "o) install ProtonGE to fix issues in some Steam Games"
+echo "o) optional install MangoHUD, OBS"
 echo
 echo -e ${ORANGE}"ATTENTION:${NC} If you use an older ${GREEN}NVIDIA${NC} GPU please ensure the latest (long-life) Nvidia Driver is supported by your Card here:"
 echo
@@ -163,7 +163,7 @@ gpu_confirm() {
         wget -qO - https://dl.winehq.org/wine-builds/winehq.key | apt-key add -
         apt-key add winehq.key
         apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $UbCodename main" -y 
-        apt-get install --install-recommends winehq-staging -y
+        apt-get install --install-recommends winehq-staging winetricks -y
         
 
     }
@@ -185,11 +185,7 @@ jqcheck() {
 
 jq=$(apt list jq --installed 2>/dev/null | grep -ow "jq")
 
-if [ -n "$jq" ]; then
-
-    break
-
-else
+if [ -z "$jq" ]; then
 
     echo -e ${GREEN}"TASK: jq package is not installed but needed to install ProtonGE - install it for you"${NC}
     apt install jq -y #jq is needed for installing ProtonGE ( Command-line JSON processor )
@@ -205,9 +201,9 @@ instprotonGE() {
     echo -e ${GREEN}"TASK: Installing Proton-GE Custom Build for native Steam"${NC}
     jqcheck
     protonGElink=$(wget -q -nv -O- https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest 2>/dev/null |  jq -r '.assets[] | select(.browser_download_url | contains("Proton")) | .browser_download_url')
-    mkdir /home/$real_user/.steam/root/compatibilitytools.d
+    mkdir /home/$real_user/.steam/root/compatibilitytools.d -p
     wget $protonGElink -P /tmp/
-    tar xf /tmp/Proton*.tar.gz -C ~/.steam/root/compatibilitytools.d
+    tar xf /tmp/Proton*.tar.gz -C /home/$real_user/.steam/root/compatibilitytools.d
     rm /tmp/Proton*
 
 }
@@ -527,8 +523,8 @@ if [ $mangohud == "true" ]; then
     echo -e ${GREEN}"TASK: Installing MangoHUD - FPS Overlay"${NC}
     buildessentialcheck
     gitcheck
-    mkdir ~/.mangohud
-    cd ~/.mangohud
+    mkdir /home/$real_user/.mangohud
+    cd /home/$real_user/.mangohud
     git clone --recurse-submodules https://github.com/flightlessmango/MangoHud.git
     cd MangoHud
     ./build.sh build
@@ -540,6 +536,7 @@ fi
 
 if [ $obs == "true" ]; then
 
+    echo -e ${GREEN}"TASK: Installing OBS Studio"${NC}
     apt install ffmpeg -y
     sudo add-repository ppa:obsproject/obs-studio -y
     sudo apt update
@@ -563,6 +560,12 @@ fi
 if [ $lutris == "true" ]; then
 
     echo -e ${GREEN}"To get information how Lutris work, visit ${NC}https://github.com/lutris/lutris${GREEN} and ${NC}https://github.com/lutris/lutris/wiki${GREEN} Website for instructions!"${NC}
+
+fi
+
+if [ $mangohud == "true" ]; then
+
+echo -e ${GREEN}"If you dont know how to enable the Custom Proton Build in Steam visit${NC}${GREEN} https://github.com/GloriousEggroll/proton-ge-custom#enabling"${NC}
 
 fi
 

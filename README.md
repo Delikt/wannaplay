@@ -12,14 +12,14 @@ An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Pl
 ### What it does:
 
 - automatically detect your Graphic Card and install the latest recommended Driver for Intel/AMD/Nvidia GPU's
-- install winehq-staging
+- install winehq-staging and winetricks
 - install Vulkan API libraries
 - Install 32-bit Game Support
 - install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc.
 - automatically configure esync support
-- optional install Steam and Lutris Gaming Plattform *[coming next..]*
-- install ProtonGE to fix issues in some Steam Games *[coming soon..]*
-- optional install MangoHUD, OBS and other nice to have software *[coming later..]*
+- optional install Steam and Lutris Gaming Plattform 
+- install ProtonGE to fix issues in some Steam Games 
+- optional install MangoHUD, OBS Studio
 
 
 #### Notice:
