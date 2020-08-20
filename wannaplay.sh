@@ -516,6 +516,7 @@ if [ $lutris == "true" ]; then
     apt update -y
     apt install lutris -y
 
+fi
 
 if [ $mangohud == "true" ]; then
 
