@@ -79,16 +79,6 @@ fi
 
 echo 
 
-#check if dialog package is installed otherwise install it 
-
-dialog=$(apt list dialog --installed 2>/dev/null | grep -ow "dialog")
-
-if [ -z "$dialog" ]; then
-
-        echo -e ${GREEN}"TASK: dialog package is not installed - install it for you"${NC}
-        apt install dialog -y
-
-fi
 
 ###########
 #functions#
@@ -328,6 +318,17 @@ echo -e ${GREEN}"TASK: Upgrading your System..."${NC}
 sleep 3
 rm /var/lib/dpkg/lock & rm /var/lib/apt/lists/lock #avoid an error i had while testing.. not 100% sure this is safe
 apt update -y && apt upgrade -y
+
+#check if dialog package is installed otherwise install it 
+
+dialog=$(apt list dialog --installed 2>/dev/null | grep -ow "dialog")
+
+if [ -z "$dialog" ]; then
+
+        echo -e ${GREEN}"TASK: dialog package is not installed - install it for you"${NC}
+        apt install dialog -y
+
+fi
 
 ##################################################
 #AMDGPU - Kisak PPA incl. LLVM for Ubuntu 19.10+ #
