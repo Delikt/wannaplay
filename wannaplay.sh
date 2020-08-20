@@ -201,9 +201,10 @@ instprotonGE() {
     echo -e ${GREEN}"TASK: Installing Proton-GE Custom Build for native Steam"${NC}
     jqcheck
     protonGElink=$(wget -q -nv -O- https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest 2>/dev/null |  jq -r '.assets[] | select(.browser_download_url | contains("Proton")) | .browser_download_url')
-    mkdir /home/$real_user/.steam/root/compatibilitytools.d -p
+    mkdir /home/$real_user/.steam/root/compatibilitytools.d -p 
     wget $protonGElink -P /tmp/
     tar xf /tmp/Proton*.tar.gz -C /home/$real_user/.steam/root/compatibilitytools.d
+    chown -R $real_user:$real_user /home/$real_user/.steam/root/compatibilitytools.d
     rm /tmp/Proton*
 
 }
@@ -491,7 +492,7 @@ sleep 1
         esac
     done
 
-if [ $steam == "true" ]; then
+if [ -n $steam ]; then
 
     echo -e ${GREEN}"TASK: Installing native version of Steam Gaming Plattform"${NC}
     apt install steam -y
@@ -499,7 +500,7 @@ if [ $steam == "true" ]; then
        
 fi
 
-if [ $lutris == "true" ]; then
+if [ -n $lutris ]; then
 
     #Install Lutris dependencies
 
@@ -516,7 +517,7 @@ if [ $lutris == "true" ]; then
 
 fi
 
-if [ $mangohud == "true" ]; then
+if [ -n $mangohud ]; then
 
     #Install MangoHud
 
@@ -524,6 +525,7 @@ if [ $mangohud == "true" ]; then
     buildessentialcheck
     gitcheck
     mkdir /home/$real_user/.mangohud
+    chown -R $real_user:$real_user /home/$real_user/.mangohud
     cd /home/$real_user/.mangohud
     git clone --recurse-submodules https://github.com/flightlessmango/MangoHud.git
     cd MangoHud
@@ -534,7 +536,7 @@ if [ $mangohud == "true" ]; then
 fi
 
 
-if [ $obs == "true" ]; then
+if [ -n $obs ]; then
 
     echo -e ${GREEN}"TASK: Installing OBS Studio"${NC}
     apt install ffmpeg -y
@@ -551,19 +553,23 @@ fi
 
 #Information
 
-if [ $mangohud == "true" ]; then
+
+    echo
+    echo -e ${YELLOW}"______________________________________________________________________________________________${NC}"
+
+if [ -n $mangohud ]; then
 
     echo -e ${GREEN}"To enable MangoHUD Overlay ingame, please visit ${NC}https://github.com/flightlessmango/MangoHud#normal-usage${GREEN} Website for instructions!"${NC}
 
 fi
     
-if [ $lutris == "true" ]; then
+if [ -n $lutris ]; then
 
     echo -e ${GREEN}"To get information how Lutris work, visit ${NC}https://github.com/lutris/lutris${GREEN} and ${NC}https://github.com/lutris/lutris/wiki${GREEN} Website for instructions!"${NC}
 
 fi
 
-if [ $mangohud == "true" ]; then
+if [ -n $mangohud ]; then
 
 echo -e ${GREEN}"If you dont know how to enable the Custom Proton Build in Steam visit${NC}${GREEN} https://github.com/GloriousEggroll/proton-ge-custom#enabling"${NC}
 
