@@ -187,7 +187,7 @@ fi
 #Install ProtonGE Custom Build - atm not in use
 
 instprotonGE() {
-
+    #FIXME: protonGE get not listet in steam [Game Breaker]
     echo -e ${GREEN}"TASK: Installing Proton-GE Custom Build for native Steam"${NC}
     jqcheck
     protonGElink=$(wget -q -nv -O- https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest 2>/dev/null |  jq -r '.assets[] | select(.browser_download_url | contains("Proton")) | .browser_download_url')
@@ -504,7 +504,7 @@ fi
 if [ $lutris == "true" ]; then
 
     #Install Lutris dependencies
-
+    
     echo -e ${GREEN}"TASK: Installing Lutris Open Gaming Plattform and Dependencies"${NC}
     apt install python3-yaml python3-requests python3-pil python3-gi \
     gir1.2-gtk-3.0 gir1.2-gnomedesktop-3.0 gir1.2-webkit2-4.0 \
@@ -512,11 +512,24 @@ if [ $lutris == "true" ]; then
     x11-xserver-utils python3-evdev libc6-i386 lib32gcc1 libgirepository1.0-dev \
     python3-setproctitle python3-distro -y
 
+    distro=$(cat /etc/os-release | grep "NAME" | head -n1 | cut -b7)
+
+if [ $distro != "U" ]; then #FIXME: Quick and Dirty
+
     apt add-repository ppa:lutris-team/lutris -y
+
+else 
+
+    apt add-apt-repository ppa:lutris-team/lutris -y
+
+fi
+
     apt update
     apt install lutris -y
 
 fi
+
+
 
 if [ $mangohud == "true" ]; then
 
