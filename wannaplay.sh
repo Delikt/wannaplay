@@ -191,7 +191,7 @@ instprotonGE() {
     echo -e ${GREEN}"TASK: Installing Proton-GE Custom Build for native Steam"${NC}
     jqcheck
     protonGElink=$(wget -q -nv -O- https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest 2>/dev/null |  jq -r '.assets[] | select(.browser_download_url | contains("Proton")) | .browser_download_url')
-    mkdir /home/$real_user/.steam/root/compatibilitytools.d -p 
+    mkdir -p /home/$real_user/.steam/root/compatibilitytools.d
     wget $protonGElink -P /tmp/
     tar xf /tmp/Proton*.tar.gz -C /home/$real_user/.steam/root/compatibilitytools.d
     chown -R $real_user:$real_user /home/$real_user/.steam
