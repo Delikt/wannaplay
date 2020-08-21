@@ -45,17 +45,19 @@ The Nvidia Driver is on the other Hand **fully proprietary**!.
 ### Proof of Concept: 
 
 
-Need for Speed Heat:
+Need for Speed Heat (DXVK):
 ![Need for Speed Pic](img/nfs.png)
 
 Video:[NFS Video](https://www.youtube.com/watch?v=daRrBt9mkfc)
 
 
+NBA2K20 (Proton):
 ![NBA2K20 Picture](img/nba2k20.png)
 
 Video:[NBA2K20 Video](https://www.youtube.com/watch?v=YZctphzbxpU)
 
 
+Ark Survival Evolved (Proton):
 ![Ark Picture](img/ark.png)
 
 Video:[Ark Video](https://www.youtube.com/watch?v=Q9ByJ51RU6w)
