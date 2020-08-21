@@ -40,3 +40,22 @@ The Nvidia Driver is on the other Hand **fully proprietary**!.
 4) Done.. follow the Script with the User input prompt and you'r should be fine so far.
 
 ![Script in Aktion gif here](img/startthescript.gif)
+
+
+### Proof of Concept: 
+
+
+Need for Speed Heat:
+![Need for Speed Pic](img/nfs.png)
+
+Video:[NFS Video](https://www.youtube.com/watch?v=daRrBt9mkfc)
+
+
+![NBA2K20 Picture](img/nba2k20.png)
+
+Video:[NBA2K20 Video](https://www.youtube.com/watch?v=YZctphzbxpU)
+
+
+![Ark Picture](img/ark.png)
+
+Video:[Ark Video](https://www.youtube.com/watch?v=Q9ByJ51RU6w)

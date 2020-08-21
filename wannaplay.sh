@@ -312,7 +312,7 @@ elif [ -z $vendor ]; then
 fi
 
 
-#Update & Upgrade System
+#Update System
 echo 
 echo -e ${GREEN}"TASK: Upgrading your System..."${NC}
 sleep 3
