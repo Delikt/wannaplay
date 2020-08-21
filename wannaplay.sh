@@ -314,7 +314,7 @@ fi
 
 #Update System
 echo 
-echo -e ${GREEN}"TASK: Upgrading your System..."${NC}
+echo -e ${GREEN}"TASK: Updating your System..."${NC}
 sleep 3
 rm /var/lib/dpkg/lock & rm /var/lib/apt/lists/lock #avoid an error i had while testing.. not 100% sure this is safe
 apt update -y #&& apt upgrade -y
