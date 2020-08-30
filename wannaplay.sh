@@ -74,7 +74,7 @@ echo
 ###########
 
 #confirm GPU - choose manualy
-options=("Intel-AMD" "Nvidia" "Skip Driver Install" "Quit")
+options=("Intel-AMD" "Nvidia" "Quit")
 
 gpu_confirm() {
         
@@ -99,10 +99,6 @@ gpu_confirm() {
                     ;;
                 "Nvidia")
                     echo "Checked, Nvidia Driver (latest long-life Driver) will be installed!"
-                    break
-                    ;;
-                    "Skip Driver Install")
-                    echo "Driver installation is skipped!"
                     break
                     ;;
                 "Quit")
@@ -201,7 +197,7 @@ GPUfunc() {
 
 if [ $vendor == "Intel-AMD" ]; then
 
-    echo -e ${GREEN}"TASK: Installing Mesa Driver (Kisak PPA), 32-bit Games support, Winehq-staging and Vulkan API.."${NC}
+    echo -e ${GREEN}"TASK: Installing Mesa Driver (Kisak PPA)"${NC}
     sleep 3
 
     #Install Vulkan
@@ -216,7 +212,7 @@ if [ $vendor == "Intel-AMD" ]; then
 elif [ $vendor == "Nvidia" ]; then
 
     #Add Driver PPA & Install
-    #ToDo: autocheck GPU if the latest driver compatible - else give option to install legacy driver?
+    #FIXME: autocheck GPU if the latest driver compatible - else give option to install legacy driver?
     echo -e ${GREEN}"TASK: Adding display driver PPA & Install latest display driver package"${NC}
     add-apt-repository ppa:graphics-drivers/ppa -y
     apt update -y
@@ -287,7 +283,7 @@ fi
 
 }
 
-#Install ProtonGE Custom Build - atm not in use
+#Install ProtonGE Custom Build
 
 instprotonGE() {
     #FIXME: protonGE get not listet in steam [Game Breaker]
@@ -450,8 +446,8 @@ apt update -y #&& apt upgrade -y
         
         fi
  
-if [ $confesync == "true" ]; then
 #Configure Esync 
+if [ $confesync == "true" ]; then
 
     echo -e ${GREEN}"TASK: Configure Esync - checking existing DefaultLimitNOFILE Entrys..."${NC}
 
@@ -511,7 +507,7 @@ if [ $steam == "true" ]; then
 
     echo -e ${GREEN}"TASK: Installing native version of Steam Gaming Plattform"${NC}
     apt install steam -y
-    instprotonGE
+    #instprotonGE
        
 fi
 
