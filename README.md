@@ -17,7 +17,7 @@ An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Pl
 - Install 32-bit Game support
 - install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc.
 - configure Esync support
-- install Steam and Lutris Gaming Plattform 
+- install native Steam and Lutris Gaming Plattforms
 - install ProtonGE Custom Build to fix some issues in Steam Games *[coming soon...]*
 - install Protontricks *[coming soon...]*
 - install useful Software like MangoHUD (FPS Overlay), OBS Studio (Screencast Software) etc.
@@ -26,6 +26,7 @@ An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Pl
 ### Dependencies:
 
 **dialog** (avaible in the official Ubuntu Repository)
+
 **jq** (Just if ProtonGE Custom Build will be installed - avaible in the official Ubuntu Repository)
 
 #### Notice:

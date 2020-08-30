@@ -316,15 +316,15 @@ gitcheck() {
 
 #Multichoice Options
 
-    cmd=(dialog --separate-output --checklist "Choose your weapon: (using SPACE for selection then ENTER to comfirm)" 22 76 16)
-        options=(1 "Install Graphic Card Driver" off
-                2 "Install WineHQ and winetricks" off
+    cmd=(dialog --separate-output --checklist "Choose your Weapon: (use SPACE for selection and ENTER to comfirm)" 22 76 16)
+        options=(1 "Install Graphic Card Driver Packages" off
+                2 "Install WineHQ and Winetricks" off
                 3 "Install Vulkan API" off
-                4 "Install 32-bit Game Support" off
+                4 "Install 32-bit Game support" off
                 5 "Install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc." off
                 6 "Configure Esync support" off
                 7 "Install native Steam Gaming Plattform" off
-                8 "Install Lutris Open Gaming Plattform" off
+                8 "Install Lutris Open Gaming Plattforms" off
                 9 "Install MangoHUD - FPS Overlay" off
                 10 "Install OBS - Open Broadcast Software" off)
         choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
