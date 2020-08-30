@@ -7,7 +7,7 @@
 | | | (____ |  _ \|  _ \(____ |  |  _ \| |(____ | | | |  (____ |   / _  (____ |    \| ___ | (_/ 
 | | | / ___ | | | | | | / ___ |  | |_| | |/ ___ | |_| |  / ___ |  ( (_| / ___ | | | | ____| _   
  \___/\_____|_| |_|_| |_\_____|  |  __/ \_)_____|\__  |  \_____|   \___ \_____|_|_|_|_____)(_)  
-  version 0.9                    |_|            (____/            (_____|       "by Delikt"                
+  version 0.9.5                  |_|            (____/            (_____|       "by Delikt"                
 EOF
 
 # ${COLOR} colorize text ${NC}
@@ -22,17 +22,6 @@ echo -e ${YELLOW}"______________________________________________________________
 echo 
 echo -e "This Script installs all the necessary libraries to play the latest DX11 (Windows) Games \non ${GREEN}Linux Mint 20+${NC} and ${GREEN}Ubuntu 19.10+${NC} Distributions and take of configurations to optimize your\nSystem for Gaming."
 echo
-echo "This Script takes of the following tasks:"
-echo
-echo "o) automatically detect your Graphic Card and install the latest recommended Driver for Intel/AMD/Nvidia GPU’s"
-echo "o) install wine-staging"
-echo "o) install Vulkan API libraries"
-echo "o) Install 32-bit Game Support"
-echo "o) install additional libraries for better compatibility with Origin, Battle.net, Uplay etc."
-echo "o) automatically configure esync support"
-echo "o) optional install and configure Steam and Lutris"
-echo "o) install ProtonGE to fix issues in some Steam Games [coming soon...]"
-echo "o) optional install MangoHUD, OBS"
 echo
 echo -e ${ORANGE}"ATTENTION:${NC} If you use an older ${GREEN}NVIDIA${NC} GPU please ensure the latest (long-life) Nvidia Driver is supported by your Card here:"
 echo
@@ -85,14 +74,13 @@ echo
 ###########
 
 #confirm GPU - choose manualy
-options=("Intel-AMD" "Nvidia" "Skip Driver Install" "Quit")
+options=("Intel-AMD" "Nvidia" "Quit")
 
 gpu_confirm() {
         
     read input
         case $input in
             [yY][eE][sS]|[yY])
-        echo "Checked, $vendor Driver will be installed!"
         echo
         ;;
             [nN][oO]|[nN])
@@ -105,15 +93,9 @@ gpu_confirm() {
         do
             case $vendor in
                 "Intel-AMD")
-                    echo "Checked, Mesa Driver for Intel and AMD GPU's will be installed!"
                     break
                     ;;
                 "Nvidia")
-                    echo "Checked, Nvidia Driver (latest long-life Driver) will be installed!"
-                    break
-                    ;;
-                    "Skip Driver Install")
-                    echo "Driver installation is skipped!"
                     break
                     ;;
                 "Quit")
@@ -135,6 +117,119 @@ gpu_confirm() {
 }
 
 
+
+#identify GPU vendor by vendor ID
+#FIXME: Change code to recognize two and more GPU's (e.g. integrated GPU is active but not in use) and let select the main GPU as option
+
+
+vendor=$(lshw -numeric -C display -quiet  | grep -ow "10DE" | tail -n +2) #Nvidia = 10DE
+
+if [ -z "$vendor" ]; then
+    
+    vendor=$(lshw -numeric -C display -quiet  | grep -ow "1002" | tail -n +2) #AMD = 1002 
+fi
+
+if [ -z "$vendor" ]; then
+
+    vendor=$(lshw -numeric -C display -quiet  | grep -ow "8086" | tail -n +2) #Intel = 8086
+fi
+
+if [ $vendor == "8086" ]; then
+
+    echo "It look like you are using a Intel GPU!"
+    vendor="Intel-AMD"
+    echo "Is this correct? [Y/n]"
+    echo
+    gpu_confirm
+
+elif [ $vendor == "10DE" ]; then
+
+    echo "It look like you are using a Nvidia GPU!"
+    vendor="Nvidia"
+    echo "Is this correct? [Y/n]"
+    echo
+    gpu_confirm
+
+elif [ $vendor == "1002" ]; then
+
+    echo "It look like you are using a AMD GPU!"
+    vendor="Intel-AMD"
+    echo "Is this correct? [Y/n]"
+    echo
+    gpu_confirm
+
+elif [ -z $vendor ]; then
+
+    echo -e ${RED}"Error: Can't recognize your GPU"${NC}
+    echo -e "Choose the Graphic Card Vendor manually:"
+    echo "Input the Number - then press Enter! - Otherwise press [Ctrl+C] to Abort"
+    echo
+
+        select vendor in "${options[@]}"
+        do
+            case $vendor in
+                "Intel-AMD")
+                    break
+                    ;;
+                "Nvidia")
+                    break
+                    ;;
+                "Quit")
+                    echo
+                    echo "Quit (Aborted)"
+                    exit
+                    ;;
+                *) echo "invalid option $REPLY";;
+            esac
+        done
+fi
+
+##################################################
+#AMDGPU - Kisak PPA incl. LLVM for Ubuntu 19.10+ #
+##################################################
+
+GPUfunc() {
+
+if [ $vendor == "Intel-AMD" ]; then
+
+    echo -e ${GREEN}"TASK: Installing Mesa Driver (Kisak PPA)"${NC}
+    sleep 3
+
+    #Install Vulkan
+    echo -e ${GREEN}"TASK: Install Vulkan API"${NC}
+    apt install mesa-vulkan-drivers mesa-vulkan-drivers:i386 -y
+
+    #Add Driver PPA & Install
+    echo -e ${GREEN}"TASK: Adding display driver PPA & Install display driver package"${NC}
+    add-apt-repository ppa:kisak/kisak-mesa -y
+    apt update -y && apt upgrade -y
+
+elif [ $vendor == "Nvidia" ]; then
+
+    #Add Driver PPA & Install
+    #FIXME: autocheck GPU if the latest driver compatible - else give option to install legacy driver?
+    echo -e ${GREEN}"TASK: Adding display driver PPA & Install latest display driver package"${NC}
+    add-apt-repository ppa:graphics-drivers/ppa -y
+    apt update -y
+
+    #get latest nvidia driver version
+    Ndriver=$(apt-cache search nvidia-driver* | grep "nvidia-driver"  | cut -c -17 | tail -1) 
+    NdriverV=${Ndriver:14}
+
+    #Install the driver
+    apt install nvidia-driver-$NdriverV libnvidia-gl-$NdriverV libnvidia-gl-$NdriverV:i386 -y
+
+    #uninstall standard open source nouveau driver 
+    echo -e ${GREEN}"TASK: Remove Open Source Driver (nouveau) - this can take view seconds..."${NC}
+    echo "blacklist nouveau" > /etc/modprobe.d/blacklist-nvidia-nouveau.conf
+    echo "options nouveau modeset=0" >> /etc/modprobe.d/blacklist-nvidia-nouveau.conf
+    update-initramfs -u
+
+
+fi
+
+}
+
 #Install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc.
 
     additionallibs() {
@@ -147,13 +242,13 @@ gpu_confirm() {
 
 #Install Winehq-staging
 
-instwine() {
+    instwine() {
 
-    echo -e ${GREEN}"TASK: Install WineHQ-staging"${NC}
-    wget -qO - https://dl.winehq.org/wine-builds/winehq.key | apt-key add -
-    add-apt-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $UbCodename main" -y 
-    apt update -y
-    apt install winehq-staging winetricks -y
+        echo -e ${GREEN}"TASK: Install WineHQ-staging"${NC}
+        wget -qO - https://dl.winehq.org/wine-builds/winehq.key | apt-key add -
+        add-apt-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $UbCodename main" -y 
+        apt update -y
+        apt install winehq-staging winetricks -y
 
     }
 
@@ -183,7 +278,7 @@ fi
 
 }
 
-#Install ProtonGE Custom Build - atm not in use
+#Install ProtonGE Custom Build
 
 instprotonGE() {
     #FIXME: protonGE get not listet in steam [Game Breaker]
@@ -229,6 +324,67 @@ fi
 
 }
 
+#check if dialog package is installed otherwise install it 
+
+dialog=$(apt list dialog --installed 2>/dev/null | grep -ow "dialog")
+
+if [ -z "$dialog" ]; then
+
+        echo -e ${GREEN}"TASK: dialog package is not installed - install it for you"${NC}
+        apt install dialog -y
+
+fi
+
+#Multichoice
+
+cmd=(dialog --separate-output --checklist "Choose your weapon: (using SPACE for selection then ENTER to comfirm)" 22 76 16)
+    options=(1 "Install Graphic Card Driver" off
+            2 "Install WineHQ and winetricks" off
+            3 "Install Vulkan API" off
+            4 "Install 32-bit Game Support" off
+            5 "Install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc." off
+            6 "Configure Esync support" off
+            7 "Install native Steam Gaming Plattform" off
+            8 "Install Lutris Open Gaming Plattform" off
+            9 "Install MangoHUD - FPS Overlay" off
+            10 "Install OBS - Open Broadcast Software" off)
+    choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
+    clear
+    for choice in $choices
+    do
+        case $choice in
+            1)
+                GPUinst=true
+                ;;
+            2)
+                winehq=true
+                ;;
+            3)
+                vulkanapi=true
+                ;;
+            4)
+                bitsupp=true
+                ;;
+            5)
+                additionallibinst=true
+                ;;
+            6)
+                confesync=true
+                ;;
+            7)
+                steam=true
+                ;;
+            8)
+                lutris=true
+                ;;
+            9)
+                mangohud=true
+                ;;
+            10)
+                obs=true
+                ;;
+        esac
+    done
 
 ############################
 #gather system information #
@@ -241,77 +397,6 @@ UbCodename=$(cat /etc/os-release | grep  "UBUNTU_CODENAME" | cut -b17-)
 #get Systemdversion
 systemdversion=$(/bin/systemd --version | grep "systemd" | cut -b9-11)
 
-#identify GPU vendor by vendor ID
-#ToDo: Change code to recognize two and more GPU's (e.g. integrated GPU is active but not in use) and let select the main GPU as option
-vendor=$(lshw -numeric -C display -quiet  | grep -ow "10DE" | tail -n +2) #Nvidia = 10DE
-
-if [ -z "$vendor" ]; then
-    
-    vendor=$(lshw -numeric -C display -quiet  | grep -ow "1002" | tail -n +2) #AMD = 1002 
-fi
-
-if [ -z "$vendor" ]; then
-
-    vendor=$(lshw -numeric -C display -quiet  | grep -ow "8086" | tail -n +2) #Intel = 8086
-fi
-
-if [ $vendor == "8086" ]; then
-
-    echo "It look like you are using a Intel GPU!"
-    vendor="Intel-AMD"
-    echo "Is this correct? [Y/n]"
-    echo
-    gpu_confirm
-
-elif [ $vendor == "10DE" ]; then
-
-    echo "It look like you are using a Nvidia GPU!"
-    vendor="Nvidia"
-    echo "Is this correct? [Y/n]"
-    echo
-    gpu_confirm
-
-elif [ $vendor == "1002" ]; then
-
-    echo "It look like you are using a AMD GPU!"
-    vendor="Intel-AMD"
-    echo "Is this correct? [Y/n]"
-    echo
-    gpu_confirm
-
-elif [ -z $vendor ]; then
-
-    echo -e ${RED}"Error: Can't recognize your GPU"${NC}
-    echo -e "Choose the Graphic Card Vendor manually and install the Driver. You can skip the Driver Installation and perform all other Tasks!"
-    echo "Input the Number - then press Enter! - Otherwise press [Ctrl+C] to Abort"
-    echo
-
-        select vendor in "${options[@]}"
-        do
-            case $vendor in
-                "Intel-AMD")
-                    echo "Checked, Mesa Driver for Intel and AMD GPU's will be installed!"
-                    break
-                    ;;
-                "Nvidia")
-                    echo "Checked, Nvidia Driver will be installed!"
-                    break
-                    ;;
-                    "Skip Driver Install")
-                    echo "Driver installation is skipped!"
-                    break
-                    ;;
-                "Quit")
-                    echo
-                    echo "Quit (Aborted)"
-                    exit
-                    ;;
-                *) echo "invalid option $REPLY";;
-            esac
-        done
-fi
-
-
 #Update System
 echo 
 echo -e ${GREEN}"TASK: Updating your System..."${NC}
@@ -319,98 +404,45 @@ sleep 3
 rm /var/lib/dpkg/lock & rm /var/lib/apt/lists/lock #avoid an error i had while testing.. not 100% sure this is safe
 apt update -y #&& apt upgrade -y
 
-#check if dialog package is installed otherwise install it 
 
-dialog=$(apt list dialog --installed 2>/dev/null | grep -ow "dialog")
-
-if [ -z "$dialog" ]; then
-
-        echo -e ${GREEN}"TASK: dialog package is not installed - install it for you"${NC}
-        apt install dialog -y
-
-fi
-
-##################################################
-#AMDGPU - Kisak PPA incl. LLVM for Ubuntu 19.10+ #
-##################################################
-
-if [ $vendor == "Intel-AMD" ]; then
-
-    echo -e ${GREEN}"TASK: Installing Mesa Driver (Kisak PPA), 32-bit Games support, Winehq-staging and Vulkan API.."${NC}
-    sleep 3
-
-    #Install 32-bit Games support
-        32bitgames
-
-    #Install Vulkan
-    echo -e ${GREEN}"TASK: Install Vulkan API"${NC}
-    apt install mesa-vulkan-drivers mesa-vulkan-drivers:i386 -y
-
-    #Add Driver PPA & Install
-    echo -e ${GREEN}"TASK: Adding display driver PPA & Install display driver package"${NC}
-    add-apt-repository ppa:kisak/kisak-mesa -y
-    apt update -y && apt upgrade -y
-
-    #Install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc.
+    #Install GPU Driver
+    if [ $GPUinst == "true" ]; then
+        GPUfunc
+    fi
+  
+    #Install additional libraries for better compatibility with Origin, Battle.net, Uplay etc. 
+    if [ $additionallibinst == "true" ]; then
         additionallibs
-
-    #Install Winehq-staging
-        instwine
-
-elif [ $vendor == "Nvidia" ]; then
-
-    #Install 32-bit Games support
-        32bitgames
-
-    #Install winehq-staging
-        instwine
-
-    #Install Vulkan
-    echo -e ${GREEN}"TASK: Install Vulkan API"${NC}
-    apt install libvulkan1 libvulkan1:i386 -y
-
-    #Add Driver PPA & Install
-    #ToDo: autocheck GPU if the latest driver compatible - else give option to install legacy driver?
-    echo -e ${GREEN}"TASK: Adding display driver PPA & Install latest display driver package"${NC}
-    add-apt-repository ppa:graphics-drivers/ppa -y
-    apt update -y
-
-    #get latest nvidia driver version
-    Ndriver=$(apt-cache search nvidia-driver* | grep "nvidia-driver"  | cut -c -17 | tail -1) 
-    NdriverV=${Ndriver:14}
-
-    #Install the driver
-    apt install nvidia-driver-$NdriverV libnvidia-gl-$NdriverV libnvidia-gl-$NdriverV:i386 -y
-
-    #uninstall standard open source nouveau driver 
-    echo -e ${GREEN}"TASK: Remove Open Source Driver (nouveau) - this can take view seconds..."${NC}
-    echo "blacklist nouveau" > /etc/modprobe.d/blacklist-nvidia-nouveau.conf
-    echo "options nouveau modeset=0" >> /etc/modprobe.d/blacklist-nvidia-nouveau.conf
-    update-initramfs -u
-
-    #Install additional libraries for better compatibility with Origin, Battle.net, Uplay etc.
-        additionallibs
-
-else
-
-    #Skip Driver installation
-    
+    fi
+  
     #Install 32-bit Game Support
+    if [ $bitsupp == "true" ]; then
         32bitgames
+    fi
+  
 
     #Install winehq-staging
+    if [ $winehq == "true" ]; then
         instwine
+    fi
+
 
     #Install Vulkan
-    echo -e ${GREEN}"TASK: Install Vulkan API"${NC}
-    apt install libvulkan1 libvulkan1:i386 -y
+    
 
-    #Install additional libraries for better compatibility with Origin, Battle.net, Uplay etc.
-        additionallibs
+        if [ $vulkanapi == "true" ]; then
+        echo -e ${GREEN}"TASK: Install Vulkan API"${NC}
+            if [ $vendor == "Nvidia" ]; then
+                apt install libvulkan1 libvulkan1:i386 -y
 
-fi
-
+            else
+                apt install mesa-vulkan-drivers mesa-vulkan-drivers:i386 -y
+            fi
+        
+        fi
+ 
 #Configure Esync 
+if [ $confesync == "true" ]; then
 
     echo -e ${GREEN}"TASK: Configure Esync - checking existing DefaultLimitNOFILE Entrys..."${NC}
 
@@ -464,40 +496,13 @@ limitconf=$(cat /etc/security/limits.conf | grep "^[^#;]" | grep "$real_user har
             fi
     fi
 
-#Multichoice other Software Packages
-
-sleep 1
-
-    cmd=(dialog --cancel-label "Skip" --separate-output --checklist "Install Packages by using SPACE for selection then ENTER to comfirm" 22 76 16)
-    options=(1 "Install Steam Gaming Plattform" off    # any option can be set to default to "on"
-            2 "Install Lutris Open Gaming Plattform" off
-            3 "Install MangoHUD - FPS Overlay" off
-            4 "Install OBS - Open Broadcast Software" off)
-    choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
-    clear
-    for choice in $choices
-    do
-        case $choice in
-            1)
-                steam=true
-                ;;
-            2)
-                lutris=true
-                ;;
-            3)
-                mangohud=true
-                ;;
-            4)
-                obs=true
-                ;;
-        esac
-    done
+fi
 
 if [ $steam == "true" ]; then
 
     echo -e ${GREEN}"TASK: Installing native version of Steam Gaming Plattform"${NC}
     apt install steam -y
-    instprotonGE
+    #instprotonGE
        
 fi
 

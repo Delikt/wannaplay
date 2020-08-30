@@ -6,20 +6,21 @@ The Goal is to provide a automated Script that have the capability to play most 
 
 For a large List of working Steam Games visit [protondb](https://www.protondb.com/).
 
-An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Plattform - visit [Lutris Homepage](https://lutris.net/).
+An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Plattform - visit [Lutris Homepage](https://lutris.net/). 
 
 
 ### What it does:
 
 - automatically detect your Graphic Card and install the latest recommended Driver for Intel/AMD/Nvidia GPU's
 - install winehq-staging and winetricks
-- install Vulkan API libraries
+- install Vulkan API
 - Install 32-bit Game Support
 - install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc.
 - automatically configure esync support
-- optional install Steam and Lutris Gaming Plattform 
+- install Steam and Lutris Gaming Plattform 
 - install ProtonGE to fix issues in some Steam Games *[coming soon...]*
-- optional install MangoHUD, OBS Studio
+- install protontricks *[coming soon...]*
+- install optional useful Software like MangoHUD, OBS Studio etc.
 
 
 #### Notice:
