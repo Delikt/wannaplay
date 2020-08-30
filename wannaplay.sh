@@ -7,7 +7,7 @@
 | | | (____ |  _ \|  _ \(____ |  |  _ \| |(____ | | | |  (____ |   / _  (____ |    \| ___ | (_/ 
 | | | / ___ | | | | | | / ___ |  | |_| | |/ ___ | |_| |  / ___ |  ( (_| / ___ | | | | ____| _   
  \___/\_____|_| |_|_| |_\_____|  |  __/ \_)_____|\__  |  \_____|   \___ \_____|_|_|_|_____)(_)  
-  version 0.9                    |_|            (____/            (_____|       "by Delikt"                
+  version 0.9.5                  |_|            (____/            (_____|       "by Delikt"                
 EOF
 
 # ${COLOR} colorize text ${NC}
@@ -81,7 +81,6 @@ gpu_confirm() {
     read input
         case $input in
             [yY][eE][sS]|[yY])
-        echo "Checked, $vendor Driver will be installed!"
         echo
         ;;
             [nN][oO]|[nN])
@@ -94,11 +93,9 @@ gpu_confirm() {
         do
             case $vendor in
                 "Intel-AMD")
-                    echo "Checked, Mesa Driver for Intel and AMD GPU's will be installed!"
                     break
                     ;;
                 "Nvidia")
-                    echo "Checked, Nvidia Driver (latest long-life Driver) will be installed!"
                     break
                     ;;
                 "Quit")
@@ -122,7 +119,7 @@ gpu_confirm() {
 
 
 #identify GPU vendor by vendor ID
-#ToDo: Change code to recognize two and more GPU's (e.g. integrated GPU is active but not in use) and let select the main GPU as option
+#FIXME: Change code to recognize two and more GPU's (e.g. integrated GPU is active but not in use) and let select the main GPU as option
 
 
 vendor=$(lshw -numeric -C display -quiet  | grep -ow "10DE" | tail -n +2) #Nvidia = 10DE
@@ -172,11 +169,9 @@ elif [ -z $vendor ]; then
         do
             case $vendor in
                 "Intel-AMD")
-                    echo "Checked, Mesa Driver for Intel and AMD GPU's will be installed!"
                     break
                     ;;
                 "Nvidia")
-                    echo "Checked, Nvidia Driver will be installed!"
                     break
                     ;;
                 "Quit")
@@ -340,16 +335,16 @@ if [ -z "$dialog" ]; then
 
 fi
 
-#Multichoice all
+#Multichoice
 
-cmd=(dialog --cancel-label "Skip" --separate-output --checklist "Choose your weapon: (using SPACE for selection then ENTER to comfirm)" 22 76 16)
-    options=(1 "Detect Graphic Card and install the Driver" off
+cmd=(dialog --separate-output --checklist "Choose your weapon: (using SPACE for selection then ENTER to comfirm)" 22 76 16)
+    options=(1 "Install Graphic Card Driver" off
             2 "Install WineHQ and winetricks" off
             3 "Install Vulkan API" off
             4 "Install 32-bit Game Support" off
             5 "Install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc." off
             6 "Configure Esync support" off
-            7 "Install Steam Gaming Plattform" off
+            7 "Install native Steam Gaming Plattform" off
             8 "Install Lutris Open Gaming Plattform" off
             9 "Install MangoHUD - FPS Overlay" off
             10 "Install OBS - Open Broadcast Software" off)
