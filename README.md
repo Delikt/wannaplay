@@ -25,9 +25,8 @@ An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Pl
 
 ### Dependencies:
 
-**dialog** (avaible in the official Ubuntu Repository)
-
-**jq** (Just if ProtonGE Custom Build will be installed - avaible in the official Ubuntu Repository)
+**dialog** (available in the official Ubuntu Repository)
+**jq** (Just if ProtonGE Custom Build will be installed - available in the official Ubuntu Repository)
 
 #### Notice:
 
