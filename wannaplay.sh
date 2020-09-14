@@ -119,7 +119,7 @@ gpu_confirm() {
 
 
 #identify GPU vendor by vendor ID
-#FIXME: Change code to recognize two and more GPU's (e.g. integrated GPU is active but not in use) and let select the main GPU as option
+#TODO: Change code to recognize two and more GPU's (e.g. integrated GPU is active but not in use) and let select the main GPU as option
 
     vendor=$(lshw -numeric -C display -quiet  | grep -ow "10DE" | tail -n +2) #Nvidia = 10DE
 
@@ -194,7 +194,7 @@ GPUfunc() {
     elif [ $vendor == "Nvidia" ]; then
 
         #Add Driver PPA & Install
-        #FIXME: autocheck GPU if the latest driver compatible - else give option to install legacy driver?
+        #TODO: autocheck GPU if the latest driver compatible - else give option to install legacy driver?
         echo -e ${GREEN}"TASK: Adding display driver PPA & Install latest display driver package"${NC}
         add-apt-repository ppa:graphics-drivers/ppa -y
         apt update -y
