@@ -190,6 +190,9 @@ GPUfunc() {
     if [ $vendor == "Intel-AMD" ]; then
 
         echo -e ${GREEN}"TASK: Installing Mesa Driver (Kisak PPA)"${NC}
+        add-apt-repository ppa:kisak/kisak-mesa -y
+        apt-get update -y
+        apt get upgrade -y
 
     elif [ $vendor == "Nvidia" ]; then
 
