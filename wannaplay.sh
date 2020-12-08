@@ -294,6 +294,29 @@ instprotonGE() {
 
 }
 
+#Install Protontricks + GUI
+
+xdguserdir=$(xdg-user-dir DESKTOP)
+
+instprotontricks() {
+
+sudo apt install python3-pip python3-setuptools python3-venv pipx
+pipx install protontricks
+pipx upgrade protontricks
+touch /home/real_user/.local/share/applications/Protontricks.desktop
+cat >> greetings.txt <<EOL
+[Desktop Entry]
+Name=Protontricks
+Exec=protontricks --gui
+Comment=
+Terminal=true
+Icon=steam_tray_mono
+Type=Application
+EOL
+cp /home/real_user/.local/share/applications/Protontricks.desktop xdguserdir
+
+}
+
 #Check if build-essential is installed otherwise install it
 
 buildessentialcheck() {
@@ -337,54 +360,62 @@ fi
 
 #Multichoice
 
-cmd=(dialog --separate-output --checklist "Choose your weapon: (using SPACE for selection then ENTER to comfirm)" 22 76 16)
-    options=(1 "Install Graphic Card Driver" off
-            2 "Install WineHQ and winetricks" off
-            3 "Install Vulkan API" off
-            4 "Install 32-bit Game Support" off
-            5 "Install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc." off
-            6 "Configure Esync support" off
-            7 "Install native Steam Gaming Plattform" off
-            8 "Install Lutris Open Gaming Plattform" off
-            9 "Install MangoHUD - FPS Overlay" off
-            10 "Install OBS - Open Broadcast Software" off)
-    choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
-    clear
-    for choice in $choices
-    do
-        case $choice in
-            1)
-                GPUinst=true
-                ;;
-            2)
-                winehq=true
-                ;;
-            3)
-                vulkanapi=true
-                ;;
-            4)
-                bitsupp=true
-                ;;
-            5)
-                additionallibinst=true
-                ;;
-            6)
-                confesync=true
-                ;;
-            7)
-                steam=true
-                ;;
-            8)
-                lutris=true
-                ;;
-            9)
-                mangohud=true
-                ;;
-            10)
-                obs=true
-                ;;
-        esac
-    done
+    cmd=(dialog --separate-output --checklist "Choose your Weapon: (use SPACE for selection and ENTER to comfirm)" 22 76 16)
+        options=(1 "Install Graphic Card Driver Packages" off
+                2 "Install WineHQ and Winetricks" off
+                3 "Install Vulkan API" off
+                4 "Install 32-bit Game support" off
+                5 "Install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc." off
+                6 "Configure Esync support" off
+                7 "Install latest ProtonGE Release" off
+                8 "Install Protontricks + GUI" off
+                9 "Install native Steam Gaming Plattform" off
+                10 "Install Lutris Open Gaming Plattform" off
+                11 "Install MangoHUD - FPS Overlay" off
+                12 "Install OBS - Open Broadcast Software" off)
+        choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
+        clear
+        for choice in $choices
+        do
+            case $choice in
+                1)
+                    GPUinst=true
+                    ;;
+                2)
+                    winehq=true
+                    ;;
+                3)
+                    vulkanapi=true
+                    ;;
+                4)
+                    bitsupp=true
+                    ;;
+                5)
+                    additionallibinst=true
+                    ;;
+                6)
+                    confesync=true
+                    ;;
+                7)	
+                    instprotonGE=true
+                    ;;    
+                8)	
+                    instprotontricks=true
+                    ;;       
+                9)
+                    steam=true
+                    ;;
+                10)
+                    lutris=true
+                    ;;
+                11)
+                    mangohud=true
+                    ;;
+                12)
+                    obs=true
+                    ;;
+            esac
+        done
 
 ############################
 #gather system information #
