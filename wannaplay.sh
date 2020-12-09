@@ -294,28 +294,6 @@ instprotonGE() {
 
 }
 
-#Install Protontricks + GUI
-
-xdguserdir=$(xdg-user-dir DESKTOP)
-
-instprotontricks() {
-
-sudo apt install python3-pip python3-setuptools python3-venv pipx
-pipx install protontricks
-pipx upgrade protontricks
-touch /home/real_user/.local/share/applications/Protontricks.desktop
-cat >> greetings.txt <<EOL
-[Desktop Entry]
-Name=Protontricks
-Exec=protontricks --gui
-Comment=
-Terminal=true
-Icon=steam_tray_mono
-Type=Application
-EOL
-cp /home/real_user/.local/share/applications/Protontricks.desktop xdguserdir
-
-}
 
 #Check if build-essential is installed otherwise install it
 
@@ -536,6 +514,42 @@ if [ $steam == "true" ]; then
     #instprotonGE
        
 fi
+
+if [ $instprotonGE == "true" ]; then
+
+    echo -e ${GREEN}"TASK: <Installing latest ProtonGE Release"${NC}
+    jqcheck
+    instprotonGE
+       
+fi
+
+if [ $instprotontricks == "true" ]; then
+
+echo -e ${GREEN}"TASK: Installing Protontricks + GUI"${NC}
+
+xdguserdir=$(xdg-user-dir DESKTOP)
+
+instprotontricks() {
+
+sudo apt install python3-pip python3-setuptools python3-venv pipx
+pipx install protontricks
+pipx upgrade protontricks
+touch /home/real_user/.local/share/applications/Protontricks.desktop
+cat >> /home/real_user/.local/share/applications/Protontricks.desktop <<EOL
+[Desktop Entry]
+Name=Protontricks
+Exec=protontricks --gui
+Comment=
+Terminal=true
+Icon=steam_tray_mono
+Type=Application
+EOL
+cp /home/real_user/.local/share/applications/Protontricks.desktop xdguserdir
+
+}
+
+fi
+
 
 if [ $lutris == "true" ]; then
 
