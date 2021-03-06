@@ -320,7 +320,7 @@ buildess=$(apt list build-essential --installed 2>/dev/null | grep -ow "build-es
 if [ -z "$buildess" ]; then
 
     echo -e ${GREEN}"TASK: build-essential package is not installed but needed - You want to install it?"${NC}
-    apt install build-essential 
+    apt install build-essential
 
 fi
 
