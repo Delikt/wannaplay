@@ -335,7 +335,7 @@ git=$(apt list git --installed 2>/dev/null | grep -ow "git")
 if [ -z "$git" ]; then
 
     echo -e ${GREEN}"TASK: git package is not installed but needed - Install it for you"${NC}
-    apt install git -y 
+    apt install git -y
 
 fi
 
