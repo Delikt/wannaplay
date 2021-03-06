@@ -12,17 +12,22 @@ An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Pl
 ### What it does:
 
 - automatically detect your Graphic Card and install the latest recommended Driver for Intel/AMD/Nvidia GPU's
-- install winehq-staging and winetricks
+- install WineHQ (staging) and Winetricks
 - install Vulkan API
-- Install 32-bit Game Support
+- Install 32-bit Game support
 - install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc.
 - configure Esync support
-- install native Steam and Lutris Gaming Plattform
-- install ProtonGE Custom Build to fix some issues in Steam Games 
-- install Protontricks 
-- install Feral Gamemode **[coming soon]**
+- install native Steam and Lutris Gaming Plattforms
+- install ProtonGE Custom Build to fix some issues in Steam Games
+- install Protontricks
 - install useful Software like MangoHUD (FPS Overlay), OBS Studio (Screencast Software) etc.
 
+
+### Dependencies:
+
+**dialog** (available in the official Ubuntu Repository)
+
+**jq** (Just if ProtonGE Custom Build will be installed - available in the official Ubuntu Repository)
 
 #### Notice:
 
@@ -42,3 +47,24 @@ The Nvidia Driver is on the other Hand **fully proprietary**!.
 4) Done.. follow the Script with the User input prompt and you'r should be fine so far.
 
 ![Script in Aktion gif here](img/startthescript.gif)
+
+
+### Proof of Concept: 
+
+
+Need for Speed Heat (DXVK):
+![Need for Speed Pic](img/nfs.png)
+
+[NFS Video](https://www.youtube.com/watch?v=daRrBt9mkfc)
+
+
+NBA2K20 (Proton):
+![NBA2K20 Picture](img/nba2k20.png)
+
+[NBA2K20 Video](https://www.youtube.com/watch?v=YZctphzbxpU)
+
+
+Ark Survival Evolved (Proton):
+![Ark Picture](img/ark.png)
+
+[Ark Video](https://www.youtube.com/watch?v=Q9ByJ51RU6w)
