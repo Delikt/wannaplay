@@ -40,8 +40,7 @@ do
  
  case $input in
      [yY][eE][sS]|[yY])
- echo
- echo "Yes, lets do this..."
+ echo "Yes, lets do this! - Analyzing your Graphic Card, this can take few seconds... "
  break
  ;;
      [nN][oO]|[nN])
@@ -67,15 +66,47 @@ else
     real_user=$(whoami)
 fi
 
+#Sudo required, Root User prefered?
+
+if [ $real_user == "root" ]; then
+
+echo
+echo "INFO:"
+echo
+echo "You are logged in as root user - You are sure to install the software and configuring the system as root user?"
+echo "I recommend to run this script as User with sudo: sudo ./wannaplay.sh"
+echo "Input (Y/n):"
+while true;
+do
+ read input
+
+ case $input in
+     [yY][eE][sS]|[yY])
+ echo "OK, you are the Boss!"
+ break
+ ;;
+     [nN][oO]|[nN])
+ echo "No - Aborted!"
+ exit
+        ;;
+     *)
+ echo "Invalid input... Try again or press [Ctrl+C] to abort!"
+ ;;
+ esac
+done
+
+fi
+
 ###########
 #functions#
 ###########
 
 #confirm GPU - choose manualy
+echo -e "${RED}Notice: The Intel and AMD Open Source Driver are the same Package calling Mesa Package!"${NC}
 options=("Intel-AMD" "Nvidia" "Quit")
 
 gpu_confirm() {
-        
+
     read input
         case $input in
             [yY][eE][sS]|[yY])
@@ -354,16 +385,16 @@ fi
 
 #Multichoice
 
-    cmd=(dialog --separate-output --checklist "Choose your Weapon: (use SPACE for selection and ENTER to comfirm)" 22 76 16)
+    cmd=(dialog --separate-output --checklist "Choose your Weapon: (use SPACE for selection and ENTER to confirm or use your Mouse)" 19 96 16)
         options=(1 "Install Graphic Card Driver Packages" off
                 2 "Install WineHQ and Winetricks" off
                 3 "Install Vulkan API" off
                 4 "Install 32-bit Game support" off
-                5 "Additional Libraries for Origin, Battle.net, Uplay etc." off
+                5 "Install additional Libraries for Origin, Battle.net, Uplay etc. compatibility" off
                 6 "Configure Esync support" off
-                7 "Install latest ProtonGE Release" off
-                8 "Install Protontricks + GUI" off
-                9 "Install native Steam Gaming Plattform" off
+                7 "Install latest ProtonGE Release (Not working with Steam Flatpack/Snap Version)" off
+                8 "Install Protontricks + GUI (Not working with Steam Flatpack/Snap Version)" off
+                9 "Install native Steam Gaming Plattform (Apt Version)" off
                 10 "Install Lutris Open Gaming Plattform" off
                 11 "Install MangoHUD - FPS Overlay" off
                 12 "Install OBS - Open Broadcast Software" off)
