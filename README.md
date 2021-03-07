@@ -1,4 +1,4 @@
-# Wanna Play a Game (on Linux)?
+![wannaplay Pic](img/wannaplay.jpg)
 
 The **wannaplay** Script install all necessary Libraries to play "State of the Art" Windows Games on **Ubuntu 19.10+** based Distributions.
 
