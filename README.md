@@ -1,8 +1,8 @@
 # Wanna Play a Game (on Linux)?
 
-The **wannaplay** Script install all necessary Libraries to play "State of the Art" Windows Games on **Linux Mint 19+** and **Ubuntu 19.10+** Distributions.
+The **wannaplay** Script install all necessary Libraries to play "State of the Art" Windows Games on **Ubuntu 19.10+** based Distributions.
 
-The Goal is to provide a automated Script that have the capability to play most of the latest DX11 Games like Need for Speed Heat, Battlefield V, Resident Evil 7 and 2 (Remake), Star Wars Jedi: Fallen Order, Blizzard Games, NB2K20 and many more.
+It's a half-automated Script that have the capability to play most of the latest DX11 Games like Need for Speed Heat, Battlefield V, Resident Evil 7 and 2 (Remake), Star Wars Jedi: Fallen Order, Blizzard Games, NB2K20 and many more.
 
 For a large List of working Steam Games visit [protondb](https://www.protondb.com/).
 
@@ -28,6 +28,8 @@ An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Pl
 **dialog** (available in the official Ubuntu Repository)
 
 **jq** (Just if ProtonGE Custom Build will be installed - available in the official Ubuntu Repository)
+
+**build-essential** (available in the official Ubuntu Repository)
 
 #### Notice:
 

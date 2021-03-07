@@ -294,7 +294,7 @@ instprotontricks() {
 apt install python3-pip python3-setuptools python3-venv pipx -y
 sudo -u $real_user pipx install protontricks
 sudo -u $real_user pipx upgrade protontricks
-sudo -u $real_user pipx ensurepathy
+sudo -u $real_user pipx ensurepath
 sudo -u $real_user touch /home/$real_user/.local/share/applications/Protontricks.desktop
 cat >> /home/$real_user/.local/share/applications/Protontricks.desktop <<EOL
 [Desktop Entry]
