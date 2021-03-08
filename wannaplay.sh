@@ -385,7 +385,7 @@ fi
 
 #Multichoice
 
-    cmd=(dialog --separate-output --checklist "Choose your Weapon: (use SPACE for selection and ENTER to confirm or use your Mouse)" 19 96 16)
+    cmd=(dialog --ok-label "INSTALL SELECTED" --no-cancel --separate-output --checklist "Choose your Weapon: (use SPACE for selection and ENTER to confirm or use your Mouse)" 19 96 16)
         options=(1 "Install Graphic Card Driver Packages" off
                 2 "Install WineHQ and Winetricks" off
                 3 "Install Vulkan API" off
