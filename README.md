@@ -9,7 +9,7 @@ For a large List of working Steam Games visit [protondb](https://www.protondb.co
 An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Platform - visit [Lutris Homepage](https://lutris.net/).
 
 
-### What it does:
+### What it do:
 
 - automatically detect your Graphic Card and install the latest recommended Driver for Intel/AMD/Nvidia GPU's
 - install WineHQ (staging) and Winetricks
