@@ -2,7 +2,7 @@
 
 The **wannaplay** Script install all necessary Libraries to play "State of the Art" Windows Games on **Ubuntu 19.10+** based Distributions.
 
-It's a half-automated Script that brings the capability to play most of the latest DX11 Games like Need for Speed Heat, Battlefield V, Resident Evil 7 and 2 (Remake), Star Wars Jedi: Fallen Order, Blizzard Games, NB2K20 and many more.
+It's a half-automated Script that brings the capability to play most of the latest DX11 and DX12 Games like Need for Speed Heat, Battlefield V, Resident Evil 7 and 2 (Remake), Star Wars Jedi: Fallen Order, Blizzard Games, NB2K20 and many more.
 
 For a large List of working Steam Games visit [protondb](https://www.protondb.com/).
 
