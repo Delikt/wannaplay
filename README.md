@@ -6,7 +6,7 @@ It's a half-automated Script that have the capability to play most of the latest
 
 For a large List of working Steam Games visit [protondb](https://www.protondb.com/).
 
-An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Plattform - visit [Lutris Homepage](https://lutris.net/). 
+An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Platform - visit [Lutris Homepage](https://lutris.net/).
 
 
 ### What it does:
@@ -17,7 +17,7 @@ An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Pl
 - Install 32-bit Game support
 - install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc.
 - configure Esync support
-- install native Steam and Lutris Gaming Plattforms
+- install native Steam and Lutris Gaming Platforms
 - install ProtonGE Custom Build to fix some issues in Steam Games
 - install Protontricks
 - install useful Software like MangoHUD (FPS Overlay), OBS Studio (Screencast Software) etc.
@@ -46,9 +46,9 @@ The Nvidia Driver is on the other Hand **fully proprietary**!.
 
 3) After that execute the Script by typing: ``sudo ./wannaplay.sh``
 
-4) Done.. follow the Script with the User input prompt and you'r should be fine so far.
+4) Done.. follow the Script with the User input prompt and you should be fine so far.
 
-![Script in Aktion gif here](img/startthescript.gif)
+![Script in Action gif here](img/startthescript.gif)
 
 
 ### Proof of Concept: 
