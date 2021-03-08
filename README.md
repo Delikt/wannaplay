@@ -2,7 +2,7 @@
 
 The **wannaplay** Script install all necessary Libraries to play "State of the Art" Windows Games on **Ubuntu 19.10+** based Distributions.
 
-It's a half-automated Script that have the capability to play most of the latest DX11 Games like Need for Speed Heat, Battlefield V, Resident Evil 7 and 2 (Remake), Star Wars Jedi: Fallen Order, Blizzard Games, NB2K20 and many more.
+It's a half-automated Script that brings the capability to play most of the latest DX11 and DX12 Games like Need for Speed Heat, Battlefield V, Resident Evil 7 and 2 (Remake), Star Wars Jedi: Fallen Order, Blizzard Games, NB2K20 and many more.
 
 For a large List of working Steam Games visit [protondb](https://www.protondb.com/).
 
@@ -14,7 +14,7 @@ An easy way to install many Games on Linux via Scripts, are the Lutris Gaming Pl
 - automatically detect your Graphic Card and install the latest recommended Driver for Intel/AMD/Nvidia GPU's
 - install WineHQ (staging) and Winetricks
 - install Vulkan API
-- Install 32-bit Game support
+- install 32-bit Game support
 - install additional Libraries for better compatibility with Origin, Battle.net, Uplay etc.
 - configure Esync support
 - install native Steam and Lutris Gaming Platforms
