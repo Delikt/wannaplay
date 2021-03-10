@@ -304,9 +304,6 @@ fi
 
 #Install ProtonGE Custom Build
 
-
-
-
 instprotonGE() {
 
 steamapt=$(apt list steam --installed 2>/dev/null | grep -ow "steam")
@@ -320,8 +317,9 @@ if [ -z "$steamflat" ]; then
     chown -R $real_user:$real_user /home/$real_user/.steam
     rm /tmp/Proton*
 
+ fi
 
-	if [ -z "$steamapt" ]; then
+if [ -z "$steamapt" ]; then
 
     mkdir /var/lib/flatpak/app/com.valvesoftware.Steam/x86_64/stable/17c6c458a53f9dd0f7661438be8bc2f5a7eaae73a42a49a4bd4778bd2f3e623b/files/share/steam/compatibilitytools.d
     wget $protonGElink -P /tmp/
@@ -329,8 +327,8 @@ if [ -z "$steamflat" ]; then
     #chown -R $real_user:$real_user /var/lib/flatpak/app/com.valvesoftware.Steam/x86_64/stable/17c6c458a53f9dd0f7661438be8bc2f5a7eaae73a42a49a4bd4778bd2f3e623b/files/share/steam/compatibilitytools.d
     rm /tmp/Proton*
 
-    fi
- fi
+fi
+
 }
 
 #install Protontricks + GUI
