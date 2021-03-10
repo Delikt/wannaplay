@@ -320,7 +320,7 @@ if [ $(apt list steam --installed 2>/dev/null | grep -ow "steam") == "steam" ]; 
 
  fi
 
-if [ $(flatpak list --app | grep -ow 'Steam' | tail -1) =="Steam" ]; then
+if [ $(flatpak list --app | grep -ow 'Steam' | tail -1) == "Steam" ]; then
 	
 	echo "steamflat is true"
     mkdir ~/.var/app/com.valvesoftware.Steam/data/Steam/compatibilitytools.d/
