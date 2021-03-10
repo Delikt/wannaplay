@@ -577,8 +577,6 @@ fi
 
 if [ $instprotonGE == "true" ]; then
 
-    echo -e ${GREEN}"TASK: <Installing latest ProtonGE Release"${NC}
-    jqcheck
     echo -e ${GREEN}"TASK: Installing Proton-GE Custom Build for native Steam"${NC}
     jqcheck
     rm /tmp/Proton*
