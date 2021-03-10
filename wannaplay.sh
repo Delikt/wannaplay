@@ -306,10 +306,10 @@ fi
 
 instprotonGE() {
 
-steamapt=$(apt list steam --installed 2>/dev/null | grep -ow "steam")
-steamflat=$(flatpak list --app | grep -ow 'Steam' | tail -1)
+steamapt=
+steamflat=
 
-if [ -z "$steamflat" ]; then
+if [ $(apt list steam --installed 2>/dev/null | grep -ow "steam") == "steam" ]; then
 	
 	echo "steam apt is true"
     mkdir -p /home/$real_user/.steam/root/compatibilitytools.d
@@ -320,7 +320,7 @@ if [ -z "$steamflat" ]; then
 
  fi
 
-if [ -z "steamapt" ]; then
+if [ $(flatpak list --app | grep -ow 'Steam' | tail -1) =="Steam" ]; then
 	
 	echo "steamflat is true"
     mkdir ~/.var/app/com.valvesoftware.Steam/data/Steam/compatibilitytools.d/
