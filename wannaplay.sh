@@ -332,6 +332,8 @@ fi
 
 instprotontricks() {
 
+#xdguserdir=$(xdg-user-dir DESKTOP)
+
 apt install python3-pip python3-setuptools python3-venv pipx -y
 sudo -u $real_user pipx install protontricks
 sudo -u $real_user pipx upgrade protontricks
@@ -586,9 +588,7 @@ if [ $instprotontricks == "true" ]; then
 
 echo -e ${GREEN}"TASK: Installing Protontricks + GUI"${NC}
 
-xdguserdir=$(xdg-user-dir DESKTOP)
 instprotontricks
-
 
 fi
 
