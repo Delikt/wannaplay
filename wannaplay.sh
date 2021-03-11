@@ -6,7 +6,7 @@
 | | | (____ |  _ \|  _ \(____ |  |  _ \| |(____ | | | |  (____ |   / _  (____ |    \| ___ | (_/ 
 | | | / ___ | | | | | | / ___ |  | |_| | |/ ___ | |_| |  / ___ |  ( (_| / ___ | | | | ____| _   
  \___/\_____|_| |_|_| |_\_____|  |  __/ \_)_____|\__  |  \_____|   \___ \_____|_|_|_|_____)(_)  
-  version 1.0.0                  |_|            (____/            (_____|       "by Delikt"                
+  version 1.0.1                  |_|            (____/            (_____|       "by Delikt"                
 EOF
 # ${COLOR} colorize text ${NC}
 RED="\033[0;31m" # init color var
@@ -293,14 +293,14 @@ if [ -z "$dialog" ]; then
         apt install dialog -y
 fi
 #Multichoice
-    cmd=(dialog --ok-label "INSTALL SELECTED" --no-cancel --separate-output --checklist "Choose your Weapon: (use SPACE for selection and ENTER to confirm or use your Mouse)" 19 96 16)
+    cmd=(dialog --ok-label "<INSTALL SELECTED>" --no-cancel --separate-output --checklist "Choose your Weapon: (use SPACE for selection and ENTER to confirm or use your Mouse)" 19 96 16)
         options=(1 "Install Graphic Card Driver Packages" off
                 2 "Install WineHQ and Winetricks" off
                 3 "Install Vulkan API" off
                 4 "Install 32-bit Game support" off
                 5 "Install additional Libraries for Origin, Battle.net, Uplay etc. compatibility" off
                 6 "Configure Esync support" off
-                7 "Install latest ProtonGE Release (Apt and Flatpak Version supported " off
+                7 "Install latest ProtonGE Release (Apt and Flatpak version supported)" off
                 8 "Install Protontricks + GUI" off
                 9 "Install native Steam Gaming Plattform (Apt Version)" off
                 10 "Install Lutris Open Gaming Plattform" off
