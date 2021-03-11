@@ -306,12 +306,8 @@ fi
 
 instprotonGE() {
 
-steamapt=
-steamflat=
-
 if [ $(apt list steam --installed 2>/dev/null | grep -ow "steam") == "steam" ]; then
 	
-	echo "steam apt is true"
     mkdir -p /home/$real_user/.steam/root/compatibilitytools.d
     wget $protonGElink -P /tmp/
     tar xf /tmp/Proton*.tar.gz -C /home/$real_user/.steam/root/compatibilitytools.d
@@ -322,10 +318,9 @@ if [ $(apt list steam --installed 2>/dev/null | grep -ow "steam") == "steam" ]; 
 
 if [ $(flatpak list --app | grep -ow 'Steam' | tail -1) == "Steam" ]; then
 	
-	echo "steamflat is true"
-    mkdir -p ~/.var/app/com.valvesoftware.Steam/data/Steam/compatibilitytools.d
+    mkdir -p ~/.var/app/com.valvesoftware.Steam/data/Steam/compatibilitytools.d/
     wget $protonGElink -P /tmp/
-    tar xf /tmp/Proton*.tar.gz -C ~/.var/app/com.valvesoftware.Steam/data/Steam/compatibilitytools.d
+    tar xvf /tmp/Proton*.tar.gz -C ~/.var/app/com.valvesoftware.Steam/data/Steam/compatibilitytools.d/
     #chown -R $real_user:$real_user /var/lib/flatpak/app/com.valvesoftware.Steam/x86_64/stable/17c6c458a53f9dd0f7661438be8bc2f5a7eaae73a42a49a4bd4778bd2f3e623b/files/share/steam/compatibilitytools.d
     rm /tmp/Proton*
 
