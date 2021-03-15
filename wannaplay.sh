@@ -422,12 +422,12 @@ limitconf=$(cat /etc/security/limits.conf | grep "^[^#;]" | grep "$real_user har
     fi
 fi
 if [ $steam == "true" ]; then
-    echo -e ${GREEN}"TASK: Installing native version of Steam Gaming Plattform"${NC}
+    echo -e ${GREEN}"TASK: Installing APT version of Steam Gaming Plattform"${NC}
     apt install steam -y
     #instprotonGE
 fi
 if [ $instprotonGE == "true" ]; then
-    echo -e ${GREEN}"TASK: Installing Proton-GE Custom Build for native Steam"${NC}
+    echo -e ${GREEN}"TASK: Installing Proton-GE Custom Build for Steam Play"${NC}
     jqcheck
     rm /tmp/Proton*
     protonGElink=$(wget -q -nv -O- https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest 2>/dev/null |  jq -r '.assets[] | select(.browser_download_url | contains("Proton")) | .browser_download_url')
